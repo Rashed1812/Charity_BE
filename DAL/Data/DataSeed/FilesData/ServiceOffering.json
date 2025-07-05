@@ -1,0 +1,9 @@
+[
+    {
+        "Title": "Sample Title",
+        "Description": "Sample Description",
+        "ImageUrl": "https://example.com/imageurl",
+        "RedirectUrl": "https://example.com/redirecturl",
+        "IsActive": true
+    }
+]

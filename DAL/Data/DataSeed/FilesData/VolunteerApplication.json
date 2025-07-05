@@ -1,0 +1,12 @@
+[
+    {
+        "UserId": "a151e4eb-8a5d-4211-a502-091f8309db27",
+        "FullName": "Sample FullName",
+        "Email": "test_email@example.com",
+        "PhoneNumber": "Sample PhoneNumber",
+        "AreaOfInterest": "Sample AreaOfInterest",
+        "Notes": "Sample Notes",
+        "Status": 0,
+        "CreatedAt": "2025-07-03T18:59:38.619574"
+    }
+]

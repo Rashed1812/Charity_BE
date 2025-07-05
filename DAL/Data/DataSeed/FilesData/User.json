@@ -1,0 +1,26 @@
+[
+    {
+        "FullName": "User FullName",
+        "Address": "User Address",
+        "UserName": "User@gmail.com",
+        "Email": "User@gmail.com",
+        "Password": "P@ssw0rd",
+        "Role": "User"
+    },
+    {
+        "FullName": "د. أحمد",
+        "Address": "القاهرة",
+        "UserName": "advisor@gmail.com",
+        "Email": "advisor@gmail.com",
+        "Password": "P@ssw0rd",
+        "Role": "Advisor"
+    },
+    {
+        "FullName": "Admin",
+        "Address": "القاهرة",
+        "UserName": "Admin@gmail.com",
+        "Email": "Admin@gmail.com",
+        "Password": "P@ssw0rd",
+        "Role": "Admin"
+    }
+]

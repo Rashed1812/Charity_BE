@@ -1,0 +1,9 @@
+[
+    {
+        "AdvisorId": 2,
+        "Date": "2025-07-03T00:00:00",
+        "StartTime": "01:00:00",
+        "EndTime": "02:00:00",
+        "IsBooked": false
+    }
+]

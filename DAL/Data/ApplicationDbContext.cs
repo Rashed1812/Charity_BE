@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using DAL.Data.Models;
+using DAL.Data.Models.IdentityModels;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
+namespace DAL.Data
+{
+    public class ApplicationDbContext :IdentityDbContext<ApplicationUser>
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<Advisor> Advisors { get; set; }
+        public DbSet<AdviceRequest> AdviceRequests { get; set; }
+        public DbSet<AdvisorAvailability> AdvisorAvailabilities { get; set; }
+        public DbSet<Complaint> Complaints { get; set; }
+        public DbSet<ComplaintMessage> ComplaintMessages { get; set; }
+        public DbSet<NewsItem> NewsItems { get; set; }
+        public DbSet<ServiceOffering> ServiceOfferings { get; set; }
+        public DbSet<VolunteerApplication> VolunteerApplications { get; set; }
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Consultation> Consultations { get; set; }  
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+
+            builder.Entity<ApplicationUser>()
+                .HasOne(u => u.Advisor)
+                .WithOne(a => a.User)
+                .HasForeignKey<Advisor>(a => a.UserId);
+
+            builder.Entity<ApplicationUser>()
+                .HasOne(u => u.Admin)
+                .WithOne(a => a.User)
+                .HasForeignKey<Admin>(a => a.UserId);
+
+
+            builder.Entity<ComplaintMessage>()
+                .HasOne(cm => cm.Complaint)
+                .WithMany(c => c.Messages)
+                .HasForeignKey(cm => cm.ComplaintId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.Entity<Advisor>()
+                .HasOne(a => a.Consultation)
+                .WithMany(c => c.Advisors)
+                .HasForeignKey(a => a.ConsultationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<AdviceRequest>()
+                .HasOne(ar => ar.Advisor)
+                .WithMany(a => a.AdviceRequests)
+                .HasForeignKey(ar => ar.AdvisorId)
+                .OnDelete(DeleteBehavior.Cascade); // مسموح
+
+            builder.Entity<AdviceRequest>()
+                .HasOne(ar => ar.User)
+                .WithMany(u => u.AdviceRequests)
+                .HasForeignKey(ar => ar.UserId)
+                .OnDelete(DeleteBehavior.Restrict); // NO ACTION
+
+            builder.Entity<AdviceRequest>()
+                .HasOne(ar => ar.Consultation)
+                .WithMany(c => c.AdviceRequests)
+                .HasForeignKey(ar => ar.ConsultationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+        }
+    }
+}
