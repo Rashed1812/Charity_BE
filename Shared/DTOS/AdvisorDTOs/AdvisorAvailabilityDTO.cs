@@ -9,7 +9,7 @@ namespace Shared.DTOS.AdvisorDTOs
     public class AdvisorAvailabilityDTO
     {
         public int Id { get; set; }
-
+        public int AdvisorId { get; set; }
         public DateTime Date { get; set; }
 
         public TimeSpan StartTime { get; set; }

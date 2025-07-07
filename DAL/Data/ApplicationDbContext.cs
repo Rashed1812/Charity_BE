@@ -26,7 +26,8 @@ namespace DAL.Data
         public DbSet<ServiceOffering> ServiceOfferings { get; set; }
         public DbSet<VolunteerApplication> VolunteerApplications { get; set; }
         public DbSet<Admin> Admins { get; set; }
-        public DbSet<Consultation> Consultations { get; set; }  
+        public DbSet<Consultation> Consultations { get; set; }
+        public DbSet<Lecture> Lectures { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -61,19 +62,31 @@ namespace DAL.Data
                 .HasOne(ar => ar.Advisor)
                 .WithMany(a => a.AdviceRequests)
                 .HasForeignKey(ar => ar.AdvisorId)
-                .OnDelete(DeleteBehavior.Cascade); // مسموح
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<AdviceRequest>()
                 .HasOne(ar => ar.User)
                 .WithMany(u => u.AdviceRequests)
                 .HasForeignKey(ar => ar.UserId)
-                .OnDelete(DeleteBehavior.Restrict); // NO ACTION
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<AdviceRequest>()
                 .HasOne(ar => ar.Consultation)
                 .WithMany(c => c.AdviceRequests)
                 .HasForeignKey(ar => ar.ConsultationId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Lecture>()
+                .HasOne(l => l.Consultation)
+                .WithMany(c => c.Lectures)
+                .HasForeignKey(l => l.ConsultationId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Lecture>()
+                .HasOne(l => l.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(l => l.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

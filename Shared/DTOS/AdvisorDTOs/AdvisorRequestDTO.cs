@@ -8,6 +8,7 @@ namespace Shared.DTOS.AdvisorDTOs
 {
     public class AdvisorRequestDTO
     {
+        public int Id { get; set; }
         public string UserId { get; set; }
         public string UserFullName { get; set; }
         public string UserEmail { get; set; }
@@ -19,4 +20,5 @@ namespace Shared.DTOS.AdvisorDTOs
         public string? Notes { get; set; }          
         public string Status { get; set; }
     }
+
 }

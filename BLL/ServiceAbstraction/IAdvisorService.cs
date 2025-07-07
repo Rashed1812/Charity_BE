@@ -9,26 +9,25 @@ namespace BLL.ServiceAbstraction
 {
     public interface IAdvisorService
     {
-        //Get All Advisors
-        Task<IEnumerable<AdvisorDTO>> GetAllAdvisorsAsync();
-        
-        //GetAllWithRelatedData
-        Task<IEnumerable<AdvisorDTO>> GetAllAdvisorsWithRelatedDataAsync();
-
-        //GetAdvisorById
+        // Advisor Management
+        Task<List<AdvisorDTO>> GetAllAdvisorsAsync();
         Task<AdvisorDTO> GetAdvisorByIdAsync(int id);
-        //GetByIdWithRelatedData
-        Task<AdvisorDTO> GetAdvisorByIdWithRelatedDataAsync(int id);
-        //UpdateAdvisor
-        Task<AdvisorDTO> UpdateAdvisorAsync(AdvisorDTO advisorDto);
-
-        //DeleteAdvisor
+        Task<List<AdvisorDTO>> GetAdvisorsByConsultationAsync(int consultationId);
+        Task<AdvisorDTO> CreateAdvisorAsync(CreateAdvisorDTO createAdvisorDto);
+        Task<AdvisorDTO> UpdateAdvisorAsync(int id, UpdateAdvisorDTO updateAdvisorDto);
         Task<bool> DeleteAdvisorAsync(int id);
-        //AdvisorsByConsultation
-        Task<IEnumerable<AdvisorDTO>> GetAdvisorsByConsultationAsync(int consultationId);
 
-        //GetAdvisorsByAvailability
-        Task<IEnumerable<AdvisorDTO>> GetAdvisorsByAvailabilityAsync(int availabilityId);
+        // Availability Management
+        Task<List<AdvisorAvailabilityDTO>> GetAdvisorAvailabilityAsync(int advisorId);
+        Task<AdvisorAvailabilityDTO> CreateAvailabilityAsync(CreateAvailabilityDTO createAvailabilityDto);
+        Task<List<AdvisorAvailabilityDTO>> CreateBulkAvailabilityAsync(BulkAvailabilityDTO bulkAvailabilityDto);
+        Task<bool> DeleteAvailabilityAsync(int availabilityId);
 
+        // Consultation Requests
+        Task<List<AdvisorRequestDTO>> GetAdvisorRequestsAsync(int advisorId);
+        Task<AdvisorRequestDTO> UpdateRequestStatusAsync(int requestId, ConsultationStatus status);
+
+        // Statistics
+        Task<object> GetAdvisorStatisticsAsync(int advisorId);
     }
 }

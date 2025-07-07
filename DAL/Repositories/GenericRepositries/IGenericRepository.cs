@@ -10,9 +10,11 @@ namespace DAL.Repositries.GenericRepositries
     {
         Task<TEntity> GetByIdAsync(int id);
         Task<IEnumerable<TEntity>> GetAllAsync();
-        Task AddAsync(TEntity entity);
-        void Update(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
+        Task<TEntity> Update(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
         void Delete(TEntity entity);
+        Task<bool> DeleteAsync(object id);
         Task<int> SaveChangesAsync();
     }
 }
