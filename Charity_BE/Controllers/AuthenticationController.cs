@@ -1,63 +1,133 @@
-﻿using BLL.DTOS.AuthDTO;
-using BLL.ServiceAbstraction;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.DTOS.AuthDTO;
+using Shared.DTOS.Common;
+using BLL.ServiceAbstraction;
 
 namespace Charity_BE.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthenticationController(IAuthService _authService) : ControllerBase
+    public class AuthenticationController : ControllerBase
     {
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
-        {
-            var response = await _authService.LoginAsync(loginDto);
-            if (response == null)
-            {
-                return Unauthorized();
-            }
-            return Ok(response);
-        }
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDto)
-        {
-            var response = await _authService.RegisterAsync(registerDto);
-            if (response == null)
-            {
-                return BadRequest("Registration failed");
-            }
-            return Ok(response);
-        }
-        [HttpPost("register/advisor")]
-        public async Task<IActionResult> RegisterAdvisor([FromBody] RegisterAdvisorDTO registerAdvisorDto)
-        {
-            var response = await _authService.RegisterAdvisorAsync(registerAdvisorDto);
-            if (response == null)
-            {
-                return BadRequest("Advisor registration failed");
-            }
-            return Ok(response);
-        }
-        [HttpPost("register/admin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterAdminDTO registerAdminDto)
-        {
-            var response = await _authService.RegisterAdminAsync(registerAdminDto);
-            if (response == null)
-            {
-                return BadRequest("Admin registration failed");
-            }
-            return Ok(response);
-        }
-        [HttpGet("MyProfile")]
-        public async Task<IActionResult> GetCurrentUser()
-        {
-            var email = User.Identity?.Name;
-            if (string.IsNullOrEmpty(email))
-                return Unauthorized();
+        private readonly IAuthService _authService;
 
-            var userDto = await _authService.GetCurrentUserAsync(email);
-            return Ok(userDto);
+        public AuthenticationController(IAuthService authService)
+        {
+            _authService = authService;
+        }
+
+        // POST: api/authentication/login
+        [HttpPost("login")]
+        public async Task<ActionResult<ApiResponse<AuthResponseDTO>>> Login([FromBody] LoginDTO loginDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ApiResponse<AuthResponseDTO>.ErrorResult("Invalid input data", 400, 
+                    ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList()));
+
+            try
+            {
+                var result = await _authService.LoginAsync(loginDto);
+                if (!result.Success)
+                    return BadRequest(ApiResponse<AuthResponseDTO>.ErrorResult(result.Message, 400));
+
+                return Ok(ApiResponse<AuthResponseDTO>.SuccessResult(result, result.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<AuthResponseDTO>.ErrorResult("Failed to login", 500));
+            }
+        }
+
+        // POST: api/authentication/register
+        [HttpPost("register")]
+        public async Task<ActionResult<ApiResponse<AuthResponseDTO>>> Register([FromBody] RegisterDTO registerDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ApiResponse<AuthResponseDTO>.ErrorResult("Invalid input data", 400, 
+                    ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList()));
+
+            try
+            {
+                var result = await _authService.RegisterAsync(registerDto);
+                if (!result.Success)
+                    return BadRequest(ApiResponse<AuthResponseDTO>.ErrorResult(result.Message, 400));
+
+                return Ok(ApiResponse<AuthResponseDTO>.SuccessResult(result, result.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<AuthResponseDTO>.ErrorResult("Failed to register", 500));
+            }
+        }
+
+        // POST: api/authentication/register-admin
+        [HttpPost("register-admin")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResponse<AuthResponseDTO>>> RegisterAdmin([FromBody] RegisterAdminDTO registerDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ApiResponse<AuthResponseDTO>.ErrorResult("Invalid input data", 400, 
+                    ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList()));
+
+            try
+            {
+                var result = await _authService.RegisterAdminAsync(registerDto);
+                if (!result.Success)
+                    return BadRequest(ApiResponse<AuthResponseDTO>.ErrorResult(result.Message, 400));
+
+                return Ok(ApiResponse<AuthResponseDTO>.SuccessResult(result, result.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<AuthResponseDTO>.ErrorResult("Failed to register admin", 500));
+            }
+        }
+
+        // POST: api/authentication/register-advisor
+        [HttpPost("register-advisor")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResponse<AuthResponseDTO>>> RegisterAdvisor([FromBody] RegisterAdvisorDTO registerDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ApiResponse<AuthResponseDTO>.ErrorResult("Invalid input data", 400, 
+                    ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList()));
+
+            try
+            {
+                var result = await _authService.RegisterAdvisorAsync(registerDto);
+                if (!result.Success)
+                    return BadRequest(ApiResponse<AuthResponseDTO>.ErrorResult(result.Message, 400));
+
+                return Ok(ApiResponse<AuthResponseDTO>.SuccessResult(result, result.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<AuthResponseDTO>.ErrorResult("Failed to register advisor", 500));
+            }
+        }
+
+        // GET: api/authentication/me
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<ActionResult<ApiResponse<CurrentUserDTO>>> GetCurrentUser()
+        {
+            try
+            {
+                var userId = User.FindFirst("sub")?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized(ApiResponse<CurrentUserDTO>.ErrorResult("User not authenticated", 401));
+
+                var user = await _authService.GetCurrentUserAsync(userId);
+                if (user == null)
+                    return NotFound(ApiResponse<CurrentUserDTO>.ErrorResult("User not found", 404));
+
+                return Ok(ApiResponse<CurrentUserDTO>.SuccessResult(user));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<CurrentUserDTO>.ErrorResult("Failed to get current user", 500));
+            }
         }
     }
 }

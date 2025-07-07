@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,10 +15,12 @@ namespace DAL.Data.Models.IdentityModels
 
         [Required]
         public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+
+        [ForeignKey("UserId")]
+        public virtual ApplicationUser User { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters.")]
+        [StringLength(50)]
         public string FullName { get; set; }
 
         [Required]
@@ -25,7 +28,21 @@ namespace DAL.Data.Models.IdentityModels
         public string Email { get; set; }
 
         [Required]
-        [StringLength(200, ErrorMessage = "Address cannot be longer than 200 characters.")]
-        public string Address { get; set; }
+        [StringLength(20)]
+        public string PhoneNumber { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string? Department { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string? Position { get; set; }
+
+        public bool IsActive { get; set; } = true;
+
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public DateTime? UpdatedAt { get; set; }
     }
 }

@@ -1,24 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 using DAL.Data.Models.IdentityModels;
 
 namespace DAL.Data.Models
 {
     public class ComplaintMessage
     {
+        [Key]
         public int Id { get; set; }
+
+        [Required]
         public int ComplaintId { get; set; }
+
+        [ForeignKey("ComplaintId")]
         public Complaint Complaint { get; set; }
+
         [Required]
-        public string SenderId { get; set; }
-        public ApplicationUser Sender { get; set; }
+        public string UserId { get; set; }
+
+        public ApplicationUser User { get; set; }
+
         [Required]
-        public string MessageText { get; set; }
-        public DateTime SentAt { get; set; } = DateTime.UtcNow;
-        public bool IsFromAdmin { get; set; }
+        public bool IsAdmin { get; set; }
+
+        [Required]
+        [StringLength(2000)]
+        public string Message { get; set; }  
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
