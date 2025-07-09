@@ -127,6 +127,13 @@ namespace Charity_BE
                 cfg.AddProfile<AutoMapperProfile>();
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend",
+                    builder => builder.AllowAnyOrigin()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod());
+            });
 
             var app = builder.Build();
 
@@ -158,7 +165,7 @@ namespace Charity_BE
                     logger.LogError(ex, "An error occurred during database seeding.");
                 }
             }
-
+            app.UseCors("AllowFrontend");
             app.Run();
         }
     }
