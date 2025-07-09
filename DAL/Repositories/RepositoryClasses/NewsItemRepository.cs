@@ -11,6 +11,7 @@ namespace DAL.Repositories.RepositoryClasses
         private readonly ApplicationDbContext _context;
         public NewsItemRepository(ApplicationDbContext context) : base(context)
         {
+            _context = context;
         }
 
         public async Task<List<NewsItem>> GetActiveNewsAsync()

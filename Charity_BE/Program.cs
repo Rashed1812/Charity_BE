@@ -93,7 +93,6 @@ namespace Charity_BE
             builder.Services.AddScoped<IAdvisorAvailabilityRepository, AdvisorAvailabilityRepository>();
             builder.Services.AddScoped<IAdviceRequestRepository, AdviceRequestRepository>();
             builder.Services.AddScoped<IComplaintRepository, ComplaintRepository>();
-            builder.Services.AddScoped<IComplaintMessageRepository, ComplaintMessageRepository>();
             builder.Services.AddScoped<IVolunteerApplicationRepository, VolunteerApplicationRepository>();
             builder.Services.AddScoped<INewsItemRepository, NewsItemRepository>();
             builder.Services.AddScoped<IServiceOfferingRepository, ServiceOfferingRepository>();
@@ -101,6 +100,9 @@ namespace Charity_BE
             builder.Services.AddScoped<IConsultationRepository, ConsultationRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IVolunteerRepository, VolunteerRepository>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
 
             // Service Registrations

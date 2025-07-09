@@ -21,13 +21,13 @@ namespace DAL.Data
         public DbSet<AdviceRequest> AdviceRequests { get; set; }
         public DbSet<AdvisorAvailability> AdvisorAvailabilities { get; set; }
         public DbSet<Complaint> Complaints { get; set; }
-        public DbSet<ComplaintMessage> ComplaintMessages { get; set; }
         public DbSet<NewsItem> NewsItems { get; set; }
         public DbSet<ServiceOffering> ServiceOfferings { get; set; }
         public DbSet<VolunteerApplication> VolunteerApplications { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Consultation> Consultations { get; set; }
         public DbSet<Lecture> Lectures { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -43,13 +43,6 @@ namespace DAL.Data
                 .HasOne(u => u.Admin)
                 .WithOne(a => a.User)
                 .HasForeignKey<Admin>(a => a.UserId);
-
-
-            builder.Entity<ComplaintMessage>()
-                .HasOne(cm => cm.Complaint)
-                .WithMany(c => c.Messages)
-                .HasForeignKey(cm => cm.ComplaintId)
-                .OnDelete(DeleteBehavior.Restrict);
 
 
             builder.Entity<Advisor>()

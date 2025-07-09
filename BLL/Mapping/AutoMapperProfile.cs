@@ -12,6 +12,7 @@ using Shared.DTOS.NewsDTOs;
 using Shared.DTOS.ServiceOfferingDTOs;
 using Shared.DTOS.UserDTO;
 using Shared.DTOS.VolunteerDTOs;
+using Shared.DTOS.NotificationDTOs;
 
 namespace BLL.Mapping
 {
@@ -50,19 +51,10 @@ namespace BLL.Mapping
 
             // Complaint Mappings
             CreateMap<Complaint, ComplaintDTO>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName))
-                .ForMember(dest => dest.MessageCount, opt => opt.MapFrom(src => src.Messages.Count));
-            CreateMap<Complaint, ComplaintWithMessagesDTO>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName))
-                .ForMember(dest => dest.MessageCount, opt => opt.MapFrom(src => src.Messages.Count));
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName));
             CreateMap<CreateComplaintDTO, Complaint>();
             CreateMap<UpdateComplaintDTO, Complaint>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-
-            // Complaint Message Mappings
-            CreateMap<ComplaintMessage, ComplaintMessageDTO>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName));
-            CreateMap<CreateComplaintMessageDTO, ComplaintMessage>();
 
             // Consultation Mappings
             CreateMap<Consultation, ConsultationDTO>();
@@ -107,6 +99,10 @@ namespace BLL.Mapping
             CreateMap<RegisterDTO, ApplicationUser>();
             CreateMap<RegisterAdminDTO, ApplicationUser>();
             CreateMap<RegisterAdvisorDTO, ApplicationUser>();
+
+            // Notification Mappings
+            CreateMap<Notification, NotificationDTO>();
+            CreateMap<NotificationCreateDTO, Notification>();
         }
     }
 } 

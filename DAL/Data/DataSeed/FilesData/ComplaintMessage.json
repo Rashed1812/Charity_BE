@@ -1,9 +1,0 @@
-[
-    {
-        "ComplaintId": 1,
-        "SenderId": "a151e4eb-8a5d-4211-a502-091f8309db27",
-        "MessageText": "Sample MessageText",
-        "SentAt": "2025-07-03T18:59:38.619041",
-        "IsFromAdmin": true
-    }
-]

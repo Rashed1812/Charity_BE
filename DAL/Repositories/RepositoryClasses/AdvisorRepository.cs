@@ -50,12 +50,12 @@ namespace DAL.Repositories.RepositoryClasses
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Advisor>> GetAllWithIncludesAsync()
+        public async Task<List<Advisor>> GetAllWithIncludesAsync()
         {
             return await _dbContext.Advisors
                 .Include(a => a.User)
                 .Include(a => a.Consultation)
-                .Include(a => a.Availabilities)
+                .Include(a => a.Availabilities.Select(av => new {av.IsAvailable}))
                 .ToListAsync();
         }
         public async Task<Advisor> GetByIdWithIncludesAsync(int id)
@@ -72,7 +72,7 @@ namespace DAL.Repositories.RepositoryClasses
             return await _dbContext.Advisors
                 .Include(a => a.User)
                 .Include(a => a.Consultation)
-                .OrderByDescending(a => a.Id)
+                .Include(a => a.Availabilities)
                 .ToListAsync();
         }
 

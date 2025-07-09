@@ -19,11 +19,6 @@ namespace Shared.DTOS.ComplaintDTOs
         public int MessageCount { get; set; }
     }
 
-    public class ComplaintWithMessagesDTO : ComplaintDTO
-    {
-        public List<ComplaintMessageDTO> Messages { get; set; }
-    }
-
     public class CreateComplaintDTO
     {
         [Required]
@@ -53,24 +48,6 @@ namespace Shared.DTOS.ComplaintDTOs
         public string Priority { get; set; }
         public string Status { get; set; }
         public string Resolution { get; set; }
-    }
-
-    public class ComplaintMessageDTO
-    {
-        public int Id { get; set; }
-        public int ComplaintId { get; set; }
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public bool IsAdmin { get; set; }
-        public string Message { get; set; }
-        public DateTime CreatedAt { get; set; }
-    }
-
-    public class CreateComplaintMessageDTO
-    {
-        [Required]
-        [StringLength(2000)]
-        public string Message { get; set; }
     }
 
     public enum ComplaintStatus

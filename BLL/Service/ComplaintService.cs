@@ -4,26 +4,30 @@ using DAL.Repositories.RepositoryIntrfaces;
 using DAL.Data.Models;
 using Shared.DTOS.ComplaintDTOs;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTOS.NotificationDTOs;
 
 namespace BLL.Service
 {
     public class ComplaintService : IComplaintService
     {
         private readonly IComplaintRepository _complaintRepository;
-        private readonly IComplaintMessageRepository _complaintMessageRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly INotificationService _notificationService;
+        private readonly IEmailService _emailService;
 
         public ComplaintService(
             IComplaintRepository complaintRepository,
-            IComplaintMessageRepository complaintMessageRepository,
             IUserRepository userRepository,
-            IMapper mapper)
+            IMapper mapper,
+            INotificationService notificationService,
+            IEmailService emailService)
         {
             _complaintRepository = complaintRepository;
-            _complaintMessageRepository = complaintMessageRepository;
             _userRepository = userRepository;
             _mapper = mapper;
+            _notificationService = notificationService;
+            _emailService = emailService;
         }
 
         public async Task<List<ComplaintDTO>> GetAllComplaintsAsync()
@@ -38,19 +42,6 @@ namespace BLL.Service
             return _mapper.Map<List<ComplaintDTO>>(complaints);
         }
 
-        public async Task<ComplaintWithMessagesDTO> GetComplaintByIdAsync(int id)
-        {
-            var complaint = await _complaintRepository.GetByIdAsync(id);
-            if (complaint == null)
-                return null;
-
-            var messages = await _complaintMessageRepository.GetByComplaintIdAsync(id);
-            var complaintDto = _mapper.Map<ComplaintWithMessagesDTO>(complaint);
-            complaintDto.Messages = _mapper.Map<List<ComplaintMessageDTO>>(messages);
-
-            return complaintDto;
-        }
-
         public async Task<ComplaintDTO> CreateComplaintAsync(string userId, CreateComplaintDTO createComplaintDto)
         {
             var complaint = _mapper.Map<Complaint>(createComplaintDto);
@@ -59,6 +50,18 @@ namespace BLL.Service
             complaint.CreatedAt = DateTime.UtcNow;
 
             var createdComplaint = await _complaintRepository.AddAsync(complaint);
+
+            // إرسال إشعار للأدمن عند إضافة شكوى جديدة
+            var adminEmail = "admin@example.com"; // عدل هذا لاحقًا لجلب كل الأدمنز
+            var notification = new NotificationCreateDTO {
+                UserId = "admin", // عدل هذا لاحقًا ليكون لكل الأدمنز
+                Title = "شكوى جديدة",
+                Message = $"تم تقديم شكوى جديدة بعنوان: {complaint.Title}",
+                Type = NotificationType.Complaint
+            };
+            await _notificationService.AddNotificationAsync(notification);
+            await _emailService.SendEmailAsync(adminEmail, notification.Title, notification.Message);
+
             return _mapper.Map<ComplaintDTO>(createdComplaint);
         }
 
@@ -107,28 +110,6 @@ namespace BLL.Service
             return true;
         }
 
-        public async Task<List<ComplaintMessageDTO>> GetComplaintMessagesAsync(int id)
-        {
-            var messages = await _complaintMessageRepository.GetByComplaintIdAsync(id);
-            return _mapper.Map<List<ComplaintMessageDTO>>(messages);
-        }
-
-        public async Task<ComplaintMessageDTO> AddComplaintMessageAsync(int id, string userId, CreateComplaintMessageDTO createMessageDto, bool isAdmin)
-        {
-            var complaint = await _complaintRepository.GetByIdAsync(id);
-            if (complaint == null)
-                return null;
-
-            var message = _mapper.Map<ComplaintMessage>(createMessageDto);
-            message.ComplaintId = id;
-            message.UserId = userId;
-            message.IsAdmin = isAdmin;
-            message.CreatedAt = DateTime.UtcNow;
-
-            var createdMessage = await _complaintMessageRepository.AddAsync(message);
-            return _mapper.Map<ComplaintMessageDTO>(createdMessage);
-        }
-
         public async Task<ComplaintDTO> UpdateComplaintStatusAsync(int id, ComplaintStatus status)
         {
             var complaint = await _complaintRepository.GetByIdAsync(id);
@@ -143,6 +124,21 @@ namespace BLL.Service
                 complaint.ResolvedAt = DateTime.UtcNow;
 
             var updatedComplaint = await _complaintRepository.UpdateAsync(complaint);
+
+            // إرسال إشعار للمستخدم عند تغيير حالة الشكوى
+            var user = await _userRepository.GetByIdAsync(complaint.UserId);
+            if (user != null)
+            {
+                var notification = new NotificationCreateDTO {
+                    UserId = user.Id,
+                    Title = "تحديث حالة الشكوى",
+                    Message = $"تم تغيير حالة الشكوى الخاصة بك إلى: {status}",
+                    Type = NotificationType.Complaint
+                };
+                await _notificationService.AddNotificationAsync(notification);
+                await _emailService.SendEmailAsync(user.Email, notification.Title, notification.Message);
+            }
+
             return _mapper.Map<ComplaintDTO>(updatedComplaint);
         }
 

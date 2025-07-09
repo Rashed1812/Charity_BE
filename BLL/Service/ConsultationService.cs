@@ -9,6 +9,7 @@ using DAL.Repositories.RepositoryIntrfaces;
 using Shared.DTOS.AdvisorDTOs;
 using Shared.DTOS.ConsultationDTOs;
 using AutoMapper;
+using Shared.DTOS.NotificationDTOs;
 
 namespace BLL.Service
 {
@@ -18,17 +19,23 @@ namespace BLL.Service
         private readonly IAdviceRequestRepository _adviceRequestRepository;
         private readonly IAdvisorRepository _advisorRepository;
         private readonly IMapper _mapper;
+        private readonly INotificationService _notificationService;
+        private readonly IEmailService _emailService;
 
         public ConsultationService(
             IConsultationRepository consultationRepository,
             IAdviceRequestRepository adviceRequestRepository,
             IAdvisorRepository advisorRepository,
-            IMapper mapper)
+            IMapper mapper,
+            INotificationService notificationService,
+            IEmailService emailService)
         {
             _consultationRepository = consultationRepository;
             _adviceRequestRepository = adviceRequestRepository;
             _advisorRepository = advisorRepository;
             _mapper = mapper;
+            _notificationService = notificationService;
+            _emailService = emailService;
         }
 
         public async Task<IEnumerable<ConsultationDTO>> GetAllConsultationsAsync()
@@ -37,12 +44,12 @@ namespace BLL.Service
             var consultationDtos = _mapper.Map<List<ConsultationDTO>>(consultations);
 
             // Add counts
-            foreach (var dto in consultationDtos)
-            {
-                dto.AdvisorCount = await _consultationRepository.GetAdvisorCountAsync(dto.Id);
-                dto.RequestCount = await _consultationRepository.GetRequestCountAsync(dto.Id);
-                dto.LectureCount = await _consultationRepository.GetLectureCountAsync(dto.Id);
-            }
+            //foreach (var dto in consultationDtos)
+            //{
+            //    dto.AdvisorCount = await _consultationRepository.GetAdvisorCountAsync(dto.Id);
+            //    dto.RequestCount = await _consultationRepository.GetRequestCountAsync(dto.Id);
+            //    dto.LectureCount = await _consultationRepository.GetLectureCountAsync(dto.Id);
+            //}
 
             return consultationDtos;
         }
@@ -88,6 +95,18 @@ namespace BLL.Service
             consultation.CreatedAt = DateTime.UtcNow;
 
             var createdConsultation = await _consultationRepository.AddAsync(consultation);
+
+            // إرسال إشعار للأدمن عند إضافة استشارة جديدة
+            var adminEmail = "admin@example.com"; // عدل هذا لاحقًا لجلب كل الأدمنز
+            var notification = new NotificationCreateDTO {
+                UserId = "admin", // عدل هذا لاحقًا ليكون لكل الأدمنز
+                Title = "استشارة جديدة",
+                Message = $"تم تقديم طلب استشارة جديدة بعنوان: {consultation.ConsultationName}",
+                Type = NotificationType.Consultation
+            };
+            await _notificationService.AddNotificationAsync(notification);
+            await _emailService.SendEmailAsync(adminEmail, notification.Title, notification.Message);
+
             return _mapper.Map<ConsultationDTO>(createdConsultation);
         }
 

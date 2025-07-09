@@ -8,6 +8,7 @@ using DAL.Data.Models.IdentityModels;
 using DAL.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTOS.NotificationDTOs;
 
 namespace DAL.Data.DataSeed
 {
@@ -64,14 +65,6 @@ namespace DAL.Data.DataSeed
                         await _DbContext.Set<Complaint>().AddRangeAsync(list);
                 }
 
-                if (!_DbContext.Set<ComplaintMessage>().Any())
-                {
-                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\ComplaintMessage.json");
-                    var list = await JsonSerializer.DeserializeAsync<List<ComplaintMessage>>(data);
-                    if (list is not null && list.Any())
-                        await _DbContext.Set<ComplaintMessage>().AddRangeAsync(list);
-                }
-
                 if (!_DbContext.Set<NewsItem>().Any())
                 {
                     var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\NewsItem.json");
@@ -109,6 +102,28 @@ namespace DAL.Data.DataSeed
                     var list = await JsonSerializer.DeserializeAsync<List<VolunteerApplication>>(data);
                     if (list is not null && list.Any())
                         await _DbContext.Set<VolunteerApplication>().AddRangeAsync(list);
+                }
+
+                if (!_DbContext.Set<Notification>().Any())
+                {
+                    var notifications = new List<Notification>
+                    {
+                        new Notification {
+                            UserId = "fda4d803-19d4-4292-ac3d-d28ac87c86a9",
+                            Title = "تنبيه تجريبي للأدمن",
+                            Message = "تمت إضافة شكوى جديدة.",
+                            Type = NotificationType.Complaint,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new Notification {
+                            UserId = "11bd190a-608d-4da4-8cb2-cb45c3d16ff7",
+                            Title = "تنبيه تجريبي للمستخدم",
+                            Message = "تم تغيير حالة الشكوى الخاصة بك.",
+                            Type = NotificationType.Complaint,
+                            CreatedAt = DateTime.UtcNow
+                        }
+                    };
+                    await _DbContext.Set<Notification>().AddRangeAsync(notifications);
                 }
 
                 await _DbContext.SaveChangesAsync();

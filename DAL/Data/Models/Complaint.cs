@@ -48,7 +48,6 @@ namespace DAL.Data.Models
         public string Resolution { get; set; }
 
         // Navigation Properties
-        public virtual ICollection<ComplaintMessage> Messages { get; set; } = new List<ComplaintMessage>();
     }
 
     //public enum ComplaintStatus

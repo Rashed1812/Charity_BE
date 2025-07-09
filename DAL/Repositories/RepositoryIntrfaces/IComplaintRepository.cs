@@ -8,7 +8,6 @@ namespace DAL.Repositories.RepositoryIntrfaces
     {
         Task<List<Complaint>> GetAllComplaintsWithUserAsync();
         Task<List<Complaint>> GetComplaintsByUserAsync(string userId);
-        Task<Complaint> GetComplaintByIdWithMessagesAsync(int id);
         Task<int> GetTotalComplaintsCountAsync();
         Task<int> GetComplaintsCountByStatusAsync(ComplaintStatus status);
         Task<List<object>> GetComplaintsByMonthAsync(int months);
