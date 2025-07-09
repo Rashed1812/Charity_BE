@@ -33,7 +33,6 @@ namespace DAL.Data.Models.IdentityModels
         public Admin? Admin { get; set; }
         public virtual ICollection<AdviceRequest> AdviceRequests { get; set; } = new List<AdviceRequest>();
         public virtual ICollection<Complaint> Complaints { get; set; } = new List<Complaint>();
-        public virtual ICollection<ComplaintMessage> ComplaintMessages { get; set; } = new List<ComplaintMessage>();
         public virtual ICollection<VolunteerApplication> VolunteerApplications { get; set; } = new List<VolunteerApplication>();
         public virtual ICollection<Lecture> CreatedLectures { get; set; } = new List<Lecture>();
     }

@@ -12,6 +12,7 @@ namespace DAL.Repositories.RepositoryClasses
         private readonly ApplicationDbContext _context;
         public LectureRepository(ApplicationDbContext context) : base(context)
         {
+            _context = context;
         }
 
         public async Task<List<Lecture>> GetPublishedLecturesAsync()

@@ -30,8 +30,21 @@ namespace Charity_BE.Controllers
             {
                 return StatusCode(500, ApiResponse<List<AdvisorDTO>>.ErrorResult("Failed to retrieve advisors", 500));
             }
-        }
 
+        }
+        [HttpGet("with-availability")]
+        public async Task<ActionResult<ApiResponse<List<AdvisorDTO>>>> GetAllAdvisorsWithRelatedData()
+        {
+            try
+            {
+                var advisors = await _advisorService.GetAllAdvisorsWithAvailabilityAsync();
+                return Ok(ApiResponse<List<AdvisorDTO>>.SuccessResult(advisors));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<List<AdvisorDTO>>.ErrorResult("Failed to retrieve advisors", 500));
+            }
+        }
         // GET: api/advisor/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponse<AdvisorDTO>>> GetAdvisorById(int id)

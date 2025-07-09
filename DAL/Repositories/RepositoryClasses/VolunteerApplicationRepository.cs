@@ -11,6 +11,7 @@ namespace DAL.Repositories.RepositoryClasses
         private readonly ApplicationDbContext _context;
         public VolunteerApplicationRepository(ApplicationDbContext context) : base(context)
         {
+            _context = context;
         }
 
         public async Task<VolunteerApplication> GetByUserIdAsync(string userId)

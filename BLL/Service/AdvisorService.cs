@@ -41,6 +41,11 @@ namespace BLL.Service
             var advisors = await _advisorRepository.GetAllAsync();
             return _mapper.Map<List<AdvisorDTO>>(advisors);
         }
+        public async Task<List<AdvisorDTO>> GetAllAdvisorsWithAvailabilityAsync()
+        {
+            var advisors = await _advisorRepository.GetAllAdvisorsWithRelatedDataAsync();
+            return _mapper.Map<List<AdvisorDTO>>(advisors);
+        }
 
         public async Task<AdvisorDTO> GetAdvisorByIdAsync(int id)
         {

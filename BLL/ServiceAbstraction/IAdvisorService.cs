@@ -18,6 +18,7 @@ namespace BLL.ServiceAbstraction
         Task<bool> DeleteAdvisorAsync(int id);
 
         // Availability Management
+        Task<List<AdvisorDTO>> GetAllAdvisorsWithAvailabilityAsync();
         Task<List<AdvisorAvailabilityDTO>> GetAdvisorAvailabilityAsync(int advisorId);
         Task<AdvisorAvailabilityDTO> CreateAvailabilityAsync(CreateAvailabilityDTO createAvailabilityDto);
         Task<List<AdvisorAvailabilityDTO>> CreateBulkAvailabilityAsync(BulkAvailabilityDTO bulkAvailabilityDto);

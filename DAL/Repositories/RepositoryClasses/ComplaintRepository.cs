@@ -12,6 +12,7 @@ namespace DAL.Repositories.RepositoryClasses
         private readonly ApplicationDbContext _context;
         public ComplaintRepository(ApplicationDbContext context) : base(context)
         {
+            _context = context;
         }
 
         public async Task<List<Complaint>> GetAllComplaintsWithUserAsync()
@@ -28,14 +29,6 @@ namespace DAL.Repositories.RepositoryClasses
                 .Where(c => c.UserId == userId)
                 .OrderByDescending(c => c.CreatedAt)
                 .ToListAsync();
-        }
-
-        public async Task<Complaint> GetComplaintByIdWithMessagesAsync(int id)
-        {
-            return await _context.Complaints
-                .Include(c => c.User)
-                .Include(c => c.Messages)
-                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<int> GetTotalComplaintsCountAsync()

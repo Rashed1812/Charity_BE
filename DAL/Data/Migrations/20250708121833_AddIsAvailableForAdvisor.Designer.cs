@@ -4,6 +4,7 @@ using DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250708121833_AddIsAvailableForAdvisor")]
+    partial class AddIsAvailableForAdvisor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,6 +191,41 @@ namespace DAL.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Complaints");
+                });
+
+            modelBuilder.Entity("DAL.Data.Models.ComplaintMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ComplaintId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComplaintId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ComplaintMessages");
                 });
 
             modelBuilder.Entity("DAL.Data.Models.Consultation", b =>
@@ -591,42 +629,6 @@ namespace DAL.Data.Migrations
                     b.ToTable("NewsItems");
                 });
 
-            modelBuilder.Entity("DAL.Data.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notifications");
-                });
-
             modelBuilder.Entity("DAL.Data.Models.ServiceOffering", b =>
                 {
                     b.Property<int>("Id")
@@ -974,6 +976,25 @@ namespace DAL.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DAL.Data.Models.ComplaintMessage", b =>
+                {
+                    b.HasOne("DAL.Data.Models.Complaint", "Complaint")
+                        .WithMany("Messages")
+                        .HasForeignKey("ComplaintId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DAL.Data.Models.IdentityModels.ApplicationUser", "User")
+                        .WithMany("ComplaintMessages")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Complaint");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DAL.Data.Models.IdentityModels.Admin", b =>
                 {
                     b.HasOne("DAL.Data.Models.IdentityModels.ApplicationUser", "User")
@@ -1087,6 +1108,11 @@ namespace DAL.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DAL.Data.Models.Complaint", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
             modelBuilder.Entity("DAL.Data.Models.Consultation", b =>
                 {
                     b.Navigation("AdviceRequests");
@@ -1110,6 +1136,8 @@ namespace DAL.Data.Migrations
                     b.Navigation("AdviceRequests");
 
                     b.Navigation("Advisor");
+
+                    b.Navigation("ComplaintMessages");
 
                     b.Navigation("Complaints");
 

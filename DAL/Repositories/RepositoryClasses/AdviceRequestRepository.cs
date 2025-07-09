@@ -12,6 +12,7 @@ namespace DAL.Repositories.RepositoryClasses
         private readonly ApplicationDbContext _context; 
         public AdviceRequestRepository(ApplicationDbContext context) : base(context)
         {
+            _context = context;
         }
 
         public async Task<List<AdviceRequest>> GetAllRequestsWithDetailsAsync()

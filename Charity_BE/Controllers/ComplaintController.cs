@@ -53,25 +53,6 @@ namespace Charity_BE.Controllers
             }
         }
 
-        // GET: api/complaint/{id}
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<ActionResult<ApiResponse<ComplaintWithMessagesDTO>>> GetComplaintById(int id)
-        {
-            try
-            {
-                var complaint = await _complaintService.GetComplaintByIdAsync(id);
-                if (complaint == null)
-                    return NotFound(ApiResponse<ComplaintWithMessagesDTO>.ErrorResult($"Complaint with ID {id} not found", 404));
-
-                return Ok(ApiResponse<ComplaintWithMessagesDTO>.SuccessResult(complaint));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ApiResponse<ComplaintWithMessagesDTO>.ErrorResult("Failed to retrieve complaint", 500));
-            }
-        }
-
         // POST: api/complaint
         [HttpPost]
         [Authorize]
@@ -88,8 +69,7 @@ namespace Charity_BE.Controllers
                     return Unauthorized(ApiResponse<ComplaintDTO>.ErrorResult("User not authenticated", 401));
 
                 var complaint = await _complaintService.CreateComplaintAsync(userId, createComplaintDto);
-                return CreatedAtAction(nameof(GetComplaintById), new { id = complaint.Id }, 
-                    ApiResponse<ComplaintDTO>.SuccessResult(complaint, "Complaint created successfully"));
+                return Ok(ApiResponse<ComplaintDTO>.SuccessResult(complaint, "Complaint created successfully"));
             }
             catch (Exception ex)
             {
@@ -135,50 +115,6 @@ namespace Charity_BE.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<bool>.ErrorResult("Failed to delete complaint", 500));
-            }
-        }
-
-        // GET: api/complaint/{id}/messages
-        [HttpGet("{id}/messages")]
-        [Authorize]
-        public async Task<ActionResult<ApiResponse<List<ComplaintMessageDTO>>>> GetComplaintMessages(int id)
-        {
-            try
-            {
-                var messages = await _complaintService.GetComplaintMessagesAsync(id);
-                return Ok(ApiResponse<List<ComplaintMessageDTO>>.SuccessResult(messages));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ApiResponse<List<ComplaintMessageDTO>>.ErrorResult("Failed to retrieve messages", 500));
-            }
-        }
-
-        // POST: api/complaint/{id}/messages
-        [HttpPost("{id}/messages")]
-        [Authorize]
-        public async Task<ActionResult<ApiResponse<ComplaintMessageDTO>>> AddComplaintMessage(int id, [FromBody] CreateComplaintMessageDTO createMessageDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ApiResponse<ComplaintMessageDTO>.ErrorResult("Invalid input data", 400));
-
-            try
-            {
-                var userId = User.FindFirst("sub")?.Value;
-                if (string.IsNullOrEmpty(userId))
-                    return Unauthorized(ApiResponse<ComplaintMessageDTO>.ErrorResult("User not authenticated", 401));
-
-                var isAdmin = User.IsInRole("Admin");
-                var message = await _complaintService.AddComplaintMessageAsync(id, userId, createMessageDto, isAdmin);
-                if (message == null)
-                    return NotFound(ApiResponse<ComplaintMessageDTO>.ErrorResult($"Complaint with ID {id} not found", 404));
-
-                return CreatedAtAction(nameof(GetComplaintMessages), new { id }, 
-                    ApiResponse<ComplaintMessageDTO>.SuccessResult(message, "Message added successfully"));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ApiResponse<ComplaintMessageDTO>.ErrorResult("Failed to add message", 500));
             }
         }
 

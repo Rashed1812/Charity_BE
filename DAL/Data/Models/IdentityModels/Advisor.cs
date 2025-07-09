@@ -40,6 +40,7 @@ namespace DAL.Data.Models.IdentityModels
         public string Email { get; set; }
 
         public bool IsActive { get; set; } = true;
+        public bool IsAvailable { get; set; } = true;
 
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -49,7 +50,7 @@ namespace DAL.Data.Models.IdentityModels
         public Consultation Consultation { get; set; }
 
         // Navigation Properties
-        public virtual ICollection<AdvisorAvailability> Availabilities { get; set; } = new List<AdvisorAvailability>();
-        public virtual ICollection<AdviceRequest> AdviceRequests { get; set; } = new List<AdviceRequest>();
+        public ICollection<AdvisorAvailability> Availabilities { get; set; } = new List<AdvisorAvailability>();
+        public ICollection<AdviceRequest> AdviceRequests { get; set; } = new List<AdviceRequest>();
     }
 }
