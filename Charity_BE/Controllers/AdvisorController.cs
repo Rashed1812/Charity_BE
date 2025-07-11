@@ -95,13 +95,13 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<AdvisorDTO>.ErrorResult("Failed to create advisor", 500));
+                return StatusCode(500, ApiResponse<AdvisorDTO>.ErrorResult(ex.Message, 500));
             }
         }
 
         // PUT: api/advisor/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Advisor")]
+        //[Authorize(Roles = "Admin,Advisor")]
         public async Task<ActionResult<ApiResponse<AdvisorDTO>>> UpdateAdvisor(int id, [FromBody] UpdateAdvisorDTO updateAdvisorDto)
         {
             if (!ModelState.IsValid)
@@ -123,7 +123,7 @@ namespace Charity_BE.Controllers
 
         // DELETE: api/advisor/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteAdvisor(int id)
         {
             try
