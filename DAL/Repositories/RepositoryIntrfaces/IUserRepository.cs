@@ -24,7 +24,7 @@ namespace DAL.Repositories.RepositoryIntrfaces
         Task<List<ApplicationUser>> SearchUsersAsync(string searchTerm);
         Task<List<ApplicationUser>> GetUsersByRoleAsync(string roleName);
         Task<ApplicationUser> GetByIdAsync(string id);
-        Task<ApplicationUser> UpdateAsync(ApplicationUser user);
+        new Task<ApplicationUser> UpdateAsync(ApplicationUser user);
         Task UpdateUserAsync(string id, UpdateUserDTO updateDto);
         void DeleteUserAsync(string id);
         Task<ApplicationUser> GetByEmailAsync(string email);

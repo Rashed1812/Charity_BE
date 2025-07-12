@@ -117,8 +117,6 @@ namespace Charity_BE
             builder.Services.AddScoped<IServiceOfferingService, ServiceOfferingService>();
             builder.Services.AddScoped<ILectureService, LectureService>();
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IAdminService, AdminService>();
-            builder.Services.AddScoped<IUserService, UserService>();
             // Data Seed
             builder.Services.AddScoped<DataSeed>();
 

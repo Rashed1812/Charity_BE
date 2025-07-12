@@ -11,6 +11,7 @@ using Shared.DTOS.AdvisorDTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using DAL.Data.Models;
+using DAL.Repositories.RepositoryClasses;
 
 namespace BLL.Service
 {
@@ -170,26 +171,33 @@ namespace BLL.Service
         {
             var availability = _mapper.Map<AdvisorAvailability>(createAvailabilityDto);
             availability.CreatedAt = DateTime.UtcNow;
+            
+            var result = await _availabilityRepository.AddAsync(availability);
+            return _mapper.Map<AdvisorAvailabilityDTO>(result);
+        }
 
-            var createdAvailability = await _availabilityRepository.AddAsync(availability);
-            return _mapper.Map<AdvisorAvailabilityDTO>(createdAvailability);
+        public async Task<AdvisorAvailabilityDTO> UpdateAvailabilityAsync(int id, UpdateAvailabilityDTO updateAvailabilityDto)
+        {
+            var availability = await _availabilityRepository.GetByIdAsync(id);
+            if (availability == null)
+                throw new ArgumentException("Availability not found");
+
+            _mapper.Map(updateAvailabilityDto, availability);
+            availability.UpdatedAt = DateTime.UtcNow;
+            
+            var result = await _availabilityRepository.UpdateAsync(availability);
+            return _mapper.Map<AdvisorAvailabilityDTO>(result);
         }
 
         public async Task<List<AdvisorAvailabilityDTO>> CreateBulkAvailabilityAsync(BulkAvailabilityDTO bulkAvailabilityDto)
         {
-            var createdAvailabilities = new List<AdvisorAvailabilityDTO>();
-            
+            var availabilities = new List<AdvisorAvailabilityDTO>();
             foreach (var availabilityDto in bulkAvailabilityDto.Availabilities)
             {
-                var availability = _mapper.Map<AdvisorAvailability>(availabilityDto);
-                availability.AdvisorId = bulkAvailabilityDto.AdvisorId;
-                availability.CreatedAt = DateTime.UtcNow;
-                
-                var createdAvailability = await _availabilityRepository.AddAsync(availability);
-                createdAvailabilities.Add(_mapper.Map<AdvisorAvailabilityDTO>(createdAvailability));
+                var created = await CreateAvailabilityAsync(availabilityDto);
+                availabilities.Add(created);
             }
-
-            return createdAvailabilities;
+            return availabilities;
         }
 
         public async Task<bool> DeleteAvailabilityAsync(int id)
@@ -198,8 +206,7 @@ namespace BLL.Service
             if (availability == null)
                 return false;
 
-            await _availabilityRepository.DeleteAsync(availability);
-            return true;
+            return await _availabilityRepository.DeleteAsync(availability);
         }
 
         public async Task<List<AdvisorRequestDTO>> GetAdvisorRequestsAsync(int advisorId)
@@ -270,6 +277,23 @@ namespace BLL.Service
                 (ConsultationStatus.InProgress, ConsultationStatus.Completed) => true,
                 _ => false
             };
+        }
+        public async Task<List<AdvisorAvailabilityDTO>> GetAvailableSlotsAsync(int advisorId, DateTime date)
+        {
+            var availabilities = await _availabilityRepository.GetAvailableSlotsForDayAsync(advisorId, date);
+            return _mapper.Map<List<AdvisorAvailabilityDTO>>(availabilities);
+        }
+
+        public async Task<List<AdvisorAvailabilityDTO>> GetAvailableSlotsByTypeAsync(int advisorId, DateTime date, ConsultationType consultationType)
+        {
+            var availabilities = await _availabilityRepository.GetAvailableSlotsForDayAsync(advisorId, date);
+            
+            // تصفية المواعيد حسب نوع التواصل
+            var filteredAvailabilities = availabilities.Where(a => 
+                a.ConsultationType == consultationType || 
+                a.ConsultationType == ConsultationType.Both).ToList();
+            
+            return _mapper.Map<List<AdvisorAvailabilityDTO>>(filteredAvailabilities);
         }
     }
 }

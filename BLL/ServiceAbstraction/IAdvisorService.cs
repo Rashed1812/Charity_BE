@@ -21,8 +21,10 @@ namespace BLL.ServiceAbstraction
         Task<List<AdvisorDTO>> GetAllAdvisorsWithAvailabilityAsync();
         Task<List<AdvisorAvailabilityDTO>> GetAdvisorAvailabilityAsync(int advisorId);
         Task<AdvisorAvailabilityDTO> CreateAvailabilityAsync(CreateAvailabilityDTO createAvailabilityDto);
-        Task<List<AdvisorAvailabilityDTO>> CreateBulkAvailabilityAsync(BulkAvailabilityDTO bulkAvailabilityDto);
-        Task<bool> DeleteAvailabilityAsync(int availabilityId);
+        Task<AdvisorAvailabilityDTO> UpdateAvailabilityAsync(int id, UpdateAvailabilityDTO updateAvailabilityDto);
+        Task<bool> DeleteAvailabilityAsync(int id);
+        Task<List<AdvisorAvailabilityDTO>> GetAvailableSlotsAsync(int advisorId, DateTime date);
+        Task<List<AdvisorAvailabilityDTO>> GetAvailableSlotsByTypeAsync(int advisorId, DateTime date, ConsultationType consultationType);
 
         // Consultation Requests
         Task<List<AdvisorRequestDTO>> GetAdvisorRequestsAsync(int advisorId);

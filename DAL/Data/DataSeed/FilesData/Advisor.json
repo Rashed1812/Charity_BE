@@ -1,10 +1,17 @@
 [
     {
-        "UserId": "218ea52f-1312-41eb-ac8f-20e1cb359ee2",
-        "Specialty": "استشارات أسرية",
-        "FullName": "د. أحمد محمد",
-        "Description": "مستشار اجتماعي متخصص في العلاقات الأسرية وحل النزاعات",
-        "ZoomRoomUrl": "https://zoom.us/ahmed-room",
-        "ConsultationId": 1
+        "UserId": "eefd4718-bc68-46e2-865e-a836bd1f2bb1",
+        "FullName": "د. علي محمد",
+        "Specialty": "استشاري أسري",
+        "Description": "خبرة 15 عامًا في مجال الاستشارات الأسرية والتربوية.",
+        "ZoomRoomUrl": "https://zoom.us/j/1234567890",
+        "PhoneNumber": "966511112222",
+        "Email": "ali.mohamed@example.com",
+        "IsActive": true,
+        "IsAvailable": true,
+        "CreatedAt": "2025-07-05T00:00:00Z",
+        "ConsultationId": 6,
+        "ImageUrl": "https://example.com/images/advisors/ali.jpg",
+        "ConsultationType": 0
     }
 ]

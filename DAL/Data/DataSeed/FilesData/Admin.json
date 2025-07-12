@@ -6,6 +6,9 @@
         "Password": "Admin@123",
         "Address": "Sample Address",
         "Role": "Admin",
-        "UserId": "fda4d803-19d4-4292-ac3d-d28ac87c86a9"
+        "UserId": "148b2502-57b2-4957-9a88-fedaad0ca1e7",
+        "PhoneNumber": "966500000001",
+        "IsActive": true,
+        "CreatedAt": "2025-07-01T00:00:00Z"
     }
 ]

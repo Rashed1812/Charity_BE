@@ -10,5 +10,6 @@ namespace DAL.Repositories.RepositoryIntrfaces
         Task<bool> IsSlotAvailableAsync(int advisorId, DateTime date, TimeSpan startTime, TimeSpan endTime);
         Task<int> GetTotalAvailabilityByAdvisorAsync(int advisorId);
         Task<int> GetBookedAvailabilityByAdvisorAsync(int advisorId);
+        Task<List<AdvisorAvailability>> GetAvailableSlotsForDayAsync(int advisorId, DateTime date);
     }
 } 

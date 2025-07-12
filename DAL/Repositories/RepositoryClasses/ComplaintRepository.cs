@@ -99,7 +99,7 @@ namespace DAL.Repositories.RepositoryClasses
                 .ToListAsync();
         }
 
-        public async Task<List<Complaint>> GetByCategoryAsync(string category)
+        public async Task<List<Complaint>> GetByCategoryAsync(Shared.DTOS.ComplaintDTOs.ComplaintCategory category)
         {
             return await _context.Complaints
                 .Include(c => c.User)

@@ -16,7 +16,7 @@ namespace DAL.Repositories.RepositoryIntrfaces
         Task<bool> HasActiveComplaintsAsync(string userId);
         Task<List<Complaint>> GetByUserIdAsync(string userId);
         Task<List<Complaint>> GetByStatusAsync(ComplaintStatus status);
-        Task<List<Complaint>> GetByCategoryAsync(string category);
+        Task<List<Complaint>> GetByCategoryAsync(Shared.DTOS.ComplaintDTOs.ComplaintCategory category);
         Task<List<Complaint>> GetPendingComplaintsAsync();
         Task<List<Complaint>> GetResolvedComplaintsAsync();
         Task<int> GetComplaintCountByStatusAsync(ComplaintStatus status);

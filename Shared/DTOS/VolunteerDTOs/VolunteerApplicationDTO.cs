@@ -13,18 +13,8 @@ namespace Shared.DTOS.VolunteerDTOs
         public string PhoneNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Address { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
         public string Education { get; set; }
-        public string Skills { get; set; }
-        public string Experience { get; set; }
-        public string Motivation { get; set; }
-        public string Availability { get; set; }
         public string Status { get; set; }
-        public string AdminNotes { get; set; }
-        public DateTime AppliedAt { get; set; }
-        public DateTime? ReviewedAt { get; set; }
-        public string ReviewedBy { get; set; }
     }
 
     public class CreateVolunteerApplicationDTO
@@ -53,32 +43,8 @@ namespace Shared.DTOS.VolunteerDTOs
         public string Address { get; set; }
 
         [Required]
-        [StringLength(50)]
-        public string City { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string Country { get; set; }
-
-        [Required]
         [StringLength(100)]
         public string Education { get; set; }
-
-        [Required]
-        [StringLength(500)]
-        public string Skills { get; set; }
-
-        [Required]
-        [StringLength(1000)]
-        public string Experience { get; set; }
-
-        [Required]
-        [StringLength(1000)]
-        public string Motivation { get; set; }
-
-        [Required]
-        [StringLength(200)]
-        public string Availability { get; set; }
     }
 
     public class UpdateVolunteerApplicationDTO
@@ -100,26 +66,8 @@ namespace Shared.DTOS.VolunteerDTOs
         [StringLength(200)]
         public string Address { get; set; }
 
-        [StringLength(50)]
-        public string City { get; set; }
-
-        [StringLength(50)]
-        public string Country { get; set; }
-
         [StringLength(100)]
         public string Education { get; set; }
-
-        [StringLength(500)]
-        public string Skills { get; set; }
-
-        [StringLength(1000)]
-        public string Experience { get; set; }
-
-        [StringLength(1000)]
-        public string Motivation { get; set; }
-
-        [StringLength(200)]
-        public string Availability { get; set; }
     }
 
     public class ReviewVolunteerApplicationDTO
