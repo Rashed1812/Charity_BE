@@ -38,47 +38,13 @@ namespace DAL.Data.Models
         public string Address { get; set; }
 
         [Required]
-        [StringLength(50)]
-        public string City { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string Country { get; set; }
-
-        [Required]
         [StringLength(100)]
         public string Education { get; set; }
 
         [Required]
-        [StringLength(500)]
-        public string Skills { get; set; }
-
-        [Required]
-        [StringLength(1000)]
-        public string Experience { get; set; }
-
-        [Required]
-        [StringLength(1000)]
-        public string Motivation { get; set; }
-
-        [Required]
-        [StringLength(200)]
-        public string Availability { get; set; }
-
-        [Required]
         public VolunteerStatus Status { get; set; } = VolunteerStatus.Pending;
 
-        [StringLength(500)]
-        public string AdminNotes { get; set; }
-
-        public DateTime AppliedAt { get; set; } = DateTime.UtcNow;
-
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        public DateTime? ReviewedAt { get; set; }
-
-        [StringLength(450)]
-        public string ReviewedBy { get; set; }
     }
 
     public enum VolunteerStatus

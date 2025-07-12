@@ -71,29 +71,6 @@ namespace DAL.Repositories.RepositoryClasses
                 .ToListAsync<object>();
         }
 
-        public async Task<List<object>> GetApplicationsByAreaOfInterestAsync()
-        {
-            return await _context.VolunteerApplications
-                .GroupBy(v => v.City)
-                .Select(g => new
-                {
-                    AreaOfInterest = g.Key,
-                    Count = g.Count()
-                })
-                .OrderByDescending(x => x.Count)
-                .ToListAsync<object>();
-        }
-
-        public async Task<double> GetAverageReviewTimeAsync()
-        {
-            var applications = await _context.VolunteerApplications
-                .Where(v => v.ReviewedAt.HasValue)
-                .Select(v => (v.ReviewedAt.Value - v.CreatedAt).TotalHours)
-                .ToListAsync();
-
-            return applications.Any() ? applications.Average() : 0;
-        }
-
         public async Task<List<VolunteerApplication>> GetRecentApplicationsAsync(int count)
         {
             return await _context.VolunteerApplications

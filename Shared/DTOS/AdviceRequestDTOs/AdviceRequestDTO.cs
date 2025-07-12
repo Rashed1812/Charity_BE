@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Shared.DTOS.AdvisorDTOs;
 
 namespace Shared.DTOS.AdviceRequestDTOs
 {
@@ -21,6 +22,7 @@ namespace Shared.DTOS.AdviceRequestDTOs
         public string Response { get; set; }
         public int? Rating { get; set; }
         public string Review { get; set; }
+        public ConsultationType ConsultationType { get; set; }
     }
 
     public class CreateAdviceRequestDTO
@@ -38,6 +40,8 @@ namespace Shared.DTOS.AdviceRequestDTOs
 
         [Required]
         public string Priority { get; set; }
+        
+        public ConsultationType ConsultationType { get; set; } = ConsultationType.Online;
     }
 
     public class UpdateAdviceRequestDTO
@@ -49,6 +53,8 @@ namespace Shared.DTOS.AdviceRequestDTOs
         public string Description { get; set; }
 
         public string Priority { get; set; }
+        
+        public ConsultationType? ConsultationType { get; set; }
     }
 
     public class CompleteRequestDTO

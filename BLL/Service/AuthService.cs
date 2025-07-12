@@ -101,8 +101,6 @@ namespace BLL.Service
                 FullName = dto.FullName,
                 Email = dto.Email,
                 PhoneNumber = dto.PhoneNumber,
-                Department = dto.Department,
-                Position = dto.Position,
                 IsActive = true
             };
 
