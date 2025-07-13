@@ -81,7 +81,7 @@ namespace Charity_BE.Controllers
         // POST: api/advisor
         [HttpPost]
         //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> CreateAdvisor([FromBody] CreateAdvisorDTO createAdvisorDto)
+        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> CreateAdvisor([FromForm] CreateAdvisorDTO createAdvisorDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<AdvisorDTO>.ErrorResult("Invalid input data", 400, 
@@ -101,8 +101,8 @@ namespace Charity_BE.Controllers
 
         // PUT: api/advisor/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Advisor")]
-        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> UpdateAdvisor(int id, [FromBody] UpdateAdvisorDTO updateAdvisorDto)
+        //[Authorize(Roles = "Admin,Advisor")]
+        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> UpdateAdvisor(int id, [FromForm] UpdateAdvisorDTO updateAdvisorDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<AdvisorDTO>.ErrorResult("Invalid input data", 400));
@@ -123,7 +123,7 @@ namespace Charity_BE.Controllers
 
         // DELETE: api/advisor/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteAdvisor(int id)
         {
             try

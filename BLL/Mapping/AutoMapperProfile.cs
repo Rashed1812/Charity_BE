@@ -30,8 +30,8 @@ namespace BLL.Mapping
             // Advisor Mappings
             CreateMap<Advisor, AdvisorDTO>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.fullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.ConsultationName, opt => opt.MapFrom(src => src.Consultation != null ? src.Consultation.ConsultationName : ""))
                 .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
 

@@ -12,6 +12,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using DAL.Data.Models;
 using DAL.Repositories.RepositoryClasses;
+using BLL.Services.FileService;
 
 namespace BLL.Service
 {
@@ -89,7 +90,8 @@ namespace BLL.Service
 
             // Add to Advisor role
             await _userManager.AddToRoleAsync(user, "Advisor");
-
+            FileService file = new FileService();
+            var imageUrl = await file.UploadFileAsync(createAdvisorDto.Image, "AdvisorImage");
             // Create advisor
             var advisor = new Advisor
             {
@@ -100,6 +102,7 @@ namespace BLL.Service
                 ZoomRoomUrl = createAdvisorDto.ZoomRoomUrl,
                 PhoneNumber = createAdvisorDto.PhoneNumber,
                 Email = createAdvisorDto.Email,
+                ImageUrl= imageUrl,
                 ConsultationId = createAdvisorDto.ConsultationId,
                 IsActive = true
             };
@@ -138,6 +141,14 @@ namespace BLL.Service
 
             if (updateAdvisorDto.IsActive.HasValue)
                 advisor.IsActive = updateAdvisorDto.IsActive.Value;
+
+            if(updateAdvisorDto.Image !=null)
+            {
+                FileService fileService = new FileService();
+                fileService.DeleteFile(advisor.ImageUrl!);
+                var imageUrl = await fileService.UploadFileAsync(updateAdvisorDto.Image, "AdvisorImage");
+                advisor.ImageUrl = imageUrl;
+            }
 
             advisor.UpdatedAt = DateTime.UtcNow;
 
