@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Shared.DTOS.AdvisorDTOs;
 
 namespace DAL.Data.Models.IdentityModels
 {
@@ -48,6 +50,10 @@ namespace DAL.Data.Models.IdentityModels
 
         public int? ConsultationId { get; set; }
         public Consultation Consultation { get; set; }
+
+        public string? ImageUrl { get; set; }
+
+        public ConsultationType ConsultationType { get; set; } = ConsultationType.Online;
 
         // Navigation Properties
         public ICollection<AdvisorAvailability> Availabilities { get; set; } = new List<AdvisorAvailability>();

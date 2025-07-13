@@ -1,46 +1,24 @@
 using AutoMapper;
 using BLL.ServiceAbstraction;
 using DAL.Repositories.RepositoryIntrfaces;
-using DAL.Data.Models;
 using DAL.Data.Models.IdentityModels;
-using Shared.DTOS.AdminDTOs;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Shared.DTOS.AdminDTOs;
 
 namespace BLL.Service
 {
     public class AdminService : IAdminService
     {
         private readonly IAdminRepository _adminRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IAdviceRequestRepository _adviceRequestRepository;
-        private readonly IComplaintRepository _complaintRepository;
-        private readonly IVolunteerRepository _volunteerRepository;
-        private readonly IServiceOfferingRepository _serviceOfferingRepository;
-        private readonly ILectureRepository _lectureRepository;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AdminService(
-            IAdminRepository adminRepository,
-            IUserRepository userRepository,
-            IAdviceRequestRepository adviceRequestRepository,
-            IComplaintRepository complaintRepository,
-            IVolunteerRepository volunteerRepository,
-            IServiceOfferingRepository serviceOfferingRepository,
-            ILectureRepository lectureRepository,
-            UserManager<ApplicationUser> userManager,
-            IMapper mapper)
+        public AdminService(IAdminRepository adminRepository, IMapper mapper, 
+            UserManager<ApplicationUser> userManager)
         {
             _adminRepository = adminRepository;
-            _userRepository = userRepository;
-            _adviceRequestRepository = adviceRequestRepository;
-            _complaintRepository = complaintRepository;
-            _volunteerRepository = volunteerRepository;
-            _serviceOfferingRepository = serviceOfferingRepository;
-            _lectureRepository = lectureRepository;
-            _userManager = userManager;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public async Task<List<AdminDTO>> GetAllAdminsAsync()
@@ -63,40 +41,35 @@ namespace BLL.Service
 
         public async Task<AdminDTO> CreateAdminAsync(CreateAdminDTO createAdminDto)
         {
-            // Check if email is unique
-            if (!await _adminRepository.IsEmailUniqueAsync(createAdminDto.Email))
-                throw new InvalidOperationException("Email already exists");
+            // Check if user already exists
+            var existingUser = await _userManager.FindByEmailAsync(createAdminDto.Email);
+            if (existingUser != null)
+                throw new InvalidOperationException("User with this email already exists");
 
-            // Check if phone is unique
-            if (!await _adminRepository.IsPhoneUniqueAsync(createAdminDto.PhoneNumber))
-                throw new InvalidOperationException("Phone number already exists");
-
-            // Create user first
+            // Create ApplicationUser
             var user = new ApplicationUser
             {
                 UserName = createAdminDto.Email,
                 Email = createAdminDto.Email,
-                PhoneNumber = createAdminDto.PhoneNumber,
                 FullName = createAdminDto.FullName,
-                IsActive = true
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true
             };
 
-            var userResult = await _userManager.CreateAsync(user, createAdminDto.Password);
-            if (!userResult.Succeeded)
-                throw new InvalidOperationException($"Failed to create user: {string.Join(", ", userResult.Errors.Select(e => e.Description))}");
+            var result = await _userManager.CreateAsync(user, createAdminDto.Password);
+            if (!result.Succeeded)
+                throw new InvalidOperationException($"Failed to create user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
 
             // Add to Admin role
             await _userManager.AddToRoleAsync(user, "Admin");
 
-            // Create admin
+            // Create Admin record
             var admin = new Admin
             {
                 UserId = user.Id,
                 FullName = createAdminDto.FullName,
                 Email = createAdminDto.Email,
                 PhoneNumber = createAdminDto.PhoneNumber,
-                Department = createAdminDto.Department,
-                Position = createAdminDto.Position,
                 IsActive = true
             };
 
@@ -110,27 +83,7 @@ namespace BLL.Service
             if (admin == null)
                 return null;
 
-            // Update admin properties
-            if (!string.IsNullOrEmpty(updateAdminDto.FullName))
-                admin.FullName = updateAdminDto.FullName;
-
-            if (!string.IsNullOrEmpty(updateAdminDto.Email))
-                admin.Email = updateAdminDto.Email;
-
-            if (!string.IsNullOrEmpty(updateAdminDto.PhoneNumber))
-                admin.PhoneNumber = updateAdminDto.PhoneNumber;
-
-            if (!string.IsNullOrEmpty(updateAdminDto.Department))
-                admin.Department = updateAdminDto.Department;
-
-            if (!string.IsNullOrEmpty(updateAdminDto.Position))
-                admin.Position = updateAdminDto.Position;
-
-            if (updateAdminDto.IsActive.HasValue)
-                admin.IsActive = updateAdminDto.IsActive.Value;
-
-            admin.UpdatedAt = DateTime.UtcNow;
-
+            _mapper.Map(updateAdminDto, admin);
             var updatedAdmin = await _adminRepository.UpdateAsync(admin);
             return _mapper.Map<AdminDTO>(updatedAdmin);
         }
@@ -141,38 +94,40 @@ namespace BLL.Service
             if (admin == null)
                 return false;
 
-            // Delete user
-            var user = await _userManager.FindByIdAsync(admin.UserId);
-            if (user != null)
-                await _userManager.DeleteAsync(user);
-
-            // Delete admin
             await _adminRepository.DeleteAsync(admin);
             return true;
         }
 
+        // Additional methods implementation
         public async Task<object> GetSystemStatisticsAsync()
         {
-            // This would typically include various system statistics
-            var allAdmins = await _adminRepository.GetAllAsync();
+            // TODO: Implement system statistics logic
+            // This should return statistics like total users, total requests, etc.
             return new
             {
-                TotalUsers = await _userManager.Users.CountAsync(),
-                TotalAdmins = allAdmins.Count(),
-                ActiveUsers = await _userManager.Users.CountAsync(u => u.IsActive),
-                // Add more statistics as needed
+                TotalUsers = 0,
+                TotalRequests = 0,
+                TotalTrips = 0,
+                ActiveDrivers = 0,
+                ActiveNurses = 0
             };
         }
 
         public async Task<object> GetDashboardDataAsync()
         {
-            // This would typically include dashboard-specific data
+            // TODO: Implement dashboard data logic
+            // This should return data for admin dashboard
             return new
             {
-                RecentUsers = await _userManager.Users
-                    .Where(u => u.CreatedAt >= DateTime.UtcNow.AddDays(-7))
-                    .CountAsync(),
-                // Add more dashboard data as needed
+                RecentRequests = new List<object>(),
+                RecentTrips = new List<object>(),
+                SystemAlerts = new List<object>(),
+                QuickStats = new
+                {
+                    PendingRequests = 0,
+                    ActiveTrips = 0,
+                    CompletedTrips = 0
+                }
             };
         }
 
@@ -182,8 +137,8 @@ namespace BLL.Service
             if (user == null)
                 return false;
 
-            user.IsActive = true;
-            await _userManager.UpdateAsync(user);
+            // TODO: Implement user approval logic
+            // This might involve updating user status, sending notifications, etc.
             return true;
         }
 
@@ -193,8 +148,8 @@ namespace BLL.Service
             if (user == null)
                 return false;
 
-            user.IsActive = false;
-            await _userManager.UpdateAsync(user);
+            // TODO: Implement user rejection logic
+            // This might involve updating user status, sending notifications, etc.
             return true;
         }
 
@@ -204,8 +159,8 @@ namespace BLL.Service
             if (user == null)
                 return false;
 
-            user.IsActive = false;
-            await _userManager.UpdateAsync(user);
+            // TODO: Implement user suspension logic
+            // This might involve updating user status, setting suspension period, etc.
             return true;
         }
 
@@ -215,20 +170,22 @@ namespace BLL.Service
             if (user == null)
                 return false;
 
-            user.IsActive = true;
-            await _userManager.UpdateAsync(user);
+            // TODO: Implement user activation logic
+            // This might involve updating user status, sending notifications, etc.
             return true;
         }
 
         public async Task<List<object>> GetSystemLogsAsync(DateTime? fromDate, DateTime? toDate, string logLevel)
         {
-            // This would typically query a logging system
+            // TODO: Implement system logs retrieval logic
+            // This should return system logs based on the provided filters
             return new List<object>();
         }
 
         public async Task<bool> SendSystemNotificationAsync(string title, string message, List<string> userIds)
         {
-            // This would typically send notifications to users
+            // TODO: Implement system notification logic
+            // This should send notifications to the specified users
             return true;
         }
     }

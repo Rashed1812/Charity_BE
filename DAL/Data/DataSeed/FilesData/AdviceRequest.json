@@ -1,10 +1,15 @@
 [
     {
-        "UserId": "a151e4eb-8a5d-4211-a502-091f8309db27",
+        "UserId": "b341fdac-176f-4e7f-92ee-05e3e5b624f9",
         "AdvisorId": 2,
-        "AppointmentTime": "2025-07-03T18:59:38.619686",
-        "Notes": "محتاج استشارة في موضوع أسري",
+        "AdvisorAvailabilityId": 1,
+        "ConsultationType": 0,
+        "ConsultationId": 1,
+        "Title": "طلب استشارة بخصوص مشكلة أسرية",
+        "Description": "أواجه بعض التحديات في التعامل مع ابني المراهق وأحتاج إلى نصيحة.",
         "Status": 0,
-        "ConsultationId": 1
+        "Priority": "High",
+        "RequestDate": "2025-07-12T10:00:00Z",
+        "CreatedAt": "2025-07-12T10:00:00Z"
     }
 ]

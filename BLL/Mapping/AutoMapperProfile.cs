@@ -22,30 +22,43 @@ namespace BLL.Mapping
         {
             // Admin Mappings
             CreateMap<Admin, AdminDTO>()
-                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.User.FullName));
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName));
             CreateMap<CreateAdminDTO, Admin>();
             CreateMap<UpdateAdminDTO, Admin>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Advisor Mappings
             CreateMap<Advisor, AdvisorDTO>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName));
-            CreateMap<CreateAdvisorDTO, Advisor>();
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.ConsultationName, opt => opt.MapFrom(src => src.Consultation != null ? src.Consultation.ConsultationName : ""))
+                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
+
+            CreateMap<CreateAdvisorDTO, Advisor>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
+
             CreateMap<UpdateAdvisorDTO, Advisor>()
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
 
             // Advisor Availability Mappings
-            CreateMap<AdvisorAvailability, AdvisorAvailabilityDTO>();
-            CreateMap<CreateAvailabilityDTO, AdvisorAvailability>();
+            CreateMap<AdvisorAvailability, AdvisorAvailabilityDTO>()
+                .ForMember(dest => dest.AdvisorName, opt => opt.MapFrom(src => src.Advisor.FullName));
+            CreateMap<CreateAvailabilityDTO, AdvisorAvailability>()
+                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
             CreateMap<UpdateAvailabilityDTO, AdvisorAvailability>()
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
 
             // Advice Request Mappings
             CreateMap<AdviceRequest, AdviceRequestDTO>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName ))
-                .ForMember(dest => dest.AdvisorName, opt => opt.MapFrom(src => src.Advisor != null ? $"{src.Advisor.FullName}" : null))
-                .ForMember(dest => dest.ConsultationName, opt => opt.MapFrom(src => src.Consultation.ConsultationName));
-            CreateMap<CreateAdviceRequestDTO, AdviceRequest>();
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                .ForMember(dest => dest.AdvisorName, opt => opt.MapFrom(src => src.Advisor.FullName))
+                .ForMember(dest => dest.ConsultationName, opt => opt.MapFrom(src => src.Consultation.ConsultationName))
+                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
+            CreateMap<CreateAdviceRequestDTO, AdviceRequest>()
+                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
             CreateMap<UpdateAdviceRequestDTO, AdviceRequest>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 

@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DAL.Data.Migrations
+namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250706235213_UpdateApplicationUser")]
-    partial class UpdateApplicationUser
+    [Migration("20250712150009_FixAdvisorAvailabilityAdviceRequestRelation")]
+    partial class FixAdvisorAvailabilityAdviceRequestRelation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,9 @@ namespace DAL.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AdvisorAvailabilityId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("AdvisorId")
                         .HasColumnType("int");
 
@@ -43,6 +46,9 @@ namespace DAL.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ConsultationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ConsultationType")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -87,6 +93,8 @@ namespace DAL.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AdvisorAvailabilityId");
+
                     b.HasIndex("AdvisorId");
 
                     b.HasIndex("ConsultationId");
@@ -104,33 +112,42 @@ namespace DAL.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AdviceRequestId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AdvisorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ConsultationType")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DayOfWeek")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan>("EndTime")
+                    b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
-                    b.Property<bool>("IsAvailable")
+                    b.Property<bool>("IsBooked")
                         .HasColumnType("bit");
 
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<TimeSpan>("StartTime")
+                    b.Property<TimeSpan>("Time")
                         .HasColumnType("time");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdviceRequestId")
+                        .IsUnique()
+                        .HasFilter("[AdviceRequestId] IS NOT NULL");
 
                     b.HasIndex("AdvisorId");
 
@@ -145,10 +162,8 @@ namespace DAL.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -193,41 +208,6 @@ namespace DAL.Data.Migrations
                     b.ToTable("Complaints");
                 });
 
-            modelBuilder.Entity("DAL.Data.Models.ComplaintMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ComplaintId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ComplaintId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ComplaintMessages");
-                });
-
             modelBuilder.Entity("DAL.Data.Models.Consultation", b =>
                 {
                     b.Property<int>("Id")
@@ -260,6 +240,78 @@ namespace DAL.Data.Migrations
                     b.ToTable("Consultations");
                 });
 
+            modelBuilder.Entity("DAL.Data.Models.HelpRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("HelpTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HelpTypeId");
+
+                    b.ToTable("HelpRequests");
+                });
+
+            modelBuilder.Entity("DAL.Data.Models.HelpType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HelpTypes");
+                });
+
             modelBuilder.Entity("DAL.Data.Models.IdentityModels.Admin", b =>
                 {
                     b.Property<int>("Id")
@@ -270,11 +322,6 @@ namespace DAL.Data.Migrations
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -292,11 +339,6 @@ namespace DAL.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -324,6 +366,9 @@ namespace DAL.Data.Migrations
                     b.Property<int?>("ConsultationId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ConsultationType")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -340,7 +385,13 @@ namespace DAL.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
                     b.Property<string>("PhoneNumber")
@@ -626,6 +677,42 @@ namespace DAL.Data.Migrations
                     b.ToTable("NewsItems");
                 });
 
+            modelBuilder.Entity("DAL.Data.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("DAL.Data.Models.ServiceOffering", b =>
                 {
                     b.Property<int>("Id")
@@ -704,29 +791,6 @@ namespace DAL.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("AdminNotes")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("AppliedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Availability")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -742,11 +806,6 @@ namespace DAL.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Experience")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -757,28 +816,10 @@ namespace DAL.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Motivation")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime?>("ReviewedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReviewedBy")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Skills")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -929,6 +970,11 @@ namespace DAL.Data.Migrations
 
             modelBuilder.Entity("DAL.Data.Models.AdviceRequest", b =>
                 {
+                    b.HasOne("DAL.Data.Models.AdvisorAvailability", null)
+                        .WithMany()
+                        .HasForeignKey("AdvisorAvailabilityId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("DAL.Data.Models.IdentityModels.Advisor", "Advisor")
                         .WithMany("AdviceRequests")
                         .HasForeignKey("AdvisorId")
@@ -955,11 +1001,20 @@ namespace DAL.Data.Migrations
 
             modelBuilder.Entity("DAL.Data.Models.AdvisorAvailability", b =>
                 {
-                    b.HasOne("DAL.Data.Models.IdentityModels.Advisor", null)
+                    b.HasOne("DAL.Data.Models.AdviceRequest", "AdviceRequest")
+                        .WithOne()
+                        .HasForeignKey("DAL.Data.Models.AdvisorAvailability", "AdviceRequestId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("DAL.Data.Models.IdentityModels.Advisor", "Advisor")
                         .WithMany("Availabilities")
                         .HasForeignKey("AdvisorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AdviceRequest");
+
+                    b.Navigation("Advisor");
                 });
 
             modelBuilder.Entity("DAL.Data.Models.Complaint", b =>
@@ -973,23 +1028,15 @@ namespace DAL.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DAL.Data.Models.ComplaintMessage", b =>
+            modelBuilder.Entity("DAL.Data.Models.HelpRequest", b =>
                 {
-                    b.HasOne("DAL.Data.Models.Complaint", "Complaint")
-                        .WithMany("Messages")
-                        .HasForeignKey("ComplaintId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Data.Models.IdentityModels.ApplicationUser", "User")
-                        .WithMany("ComplaintMessages")
-                        .HasForeignKey("UserId")
+                    b.HasOne("DAL.Data.Models.HelpType", "HelpType")
+                        .WithMany()
+                        .HasForeignKey("HelpTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Complaint");
-
-                    b.Navigation("User");
+                    b.Navigation("HelpType");
                 });
 
             modelBuilder.Entity("DAL.Data.Models.IdentityModels.Admin", b =>
@@ -1105,11 +1152,6 @@ namespace DAL.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DAL.Data.Models.Complaint", b =>
-                {
-                    b.Navigation("Messages");
-                });
-
             modelBuilder.Entity("DAL.Data.Models.Consultation", b =>
                 {
                     b.Navigation("AdviceRequests");
@@ -1133,8 +1175,6 @@ namespace DAL.Data.Migrations
                     b.Navigation("AdviceRequests");
 
                     b.Navigation("Advisor");
-
-                    b.Navigation("ComplaintMessages");
 
                     b.Navigation("Complaints");
 

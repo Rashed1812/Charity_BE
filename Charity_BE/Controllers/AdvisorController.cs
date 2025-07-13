@@ -175,17 +175,18 @@ namespace Charity_BE.Controllers
             }
         }
 
-        // POST: api/advisor/availability/bulk
-        [HttpPost("availability/bulk")]
-        [Authorize(Roles = "Advisor")]
+        // POST: api/advisor/bulk-availability
+        [HttpPost("bulk-availability")]
         public async Task<ActionResult<ApiResponse<List<AdvisorAvailabilityDTO>>>> CreateBulkAvailability([FromBody] BulkAvailabilityDTO bulkAvailabilityDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult("Invalid input data", 400));
-
             try
             {
-                var availabilities = await _advisorService.CreateBulkAvailabilityAsync(bulkAvailabilityDto);
+                var availabilities = new List<AdvisorAvailabilityDTO>();
+                foreach (var availabilityDto in bulkAvailabilityDto.Availabilities)
+                {
+                    var created = await _advisorService.CreateAvailabilityAsync(availabilityDto);
+                    availabilities.Add(created);
+                }
                 return Ok(ApiResponse<List<AdvisorAvailabilityDTO>>.SuccessResult(availabilities, "Bulk availability created successfully"));
             }
             catch (Exception ex)
@@ -245,6 +246,35 @@ namespace Charity_BE.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<AdvisorRequestDTO>.ErrorResult("Failed to update request status", 500));
+            }
+        }
+        // GET: api/advisor/{advisorId}/available-slots
+        [HttpGet("{advisorId}/available-slots")]
+        public async Task<ActionResult<ApiResponse<List<AdvisorAvailabilityDTO>>>> GetAvailableSlots(int advisorId, DateTime date)
+        {
+            try
+            {
+                var availabilities = await _advisorService.GetAvailableSlotsAsync(advisorId, date);
+                return Ok(ApiResponse<List<AdvisorAvailabilityDTO>>.SuccessResult(availabilities));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult("Failed to retrieve available slots", 500));
+            }
+        }
+
+        // GET: api/advisor/{advisorId}/available-slots-by-type
+        [HttpGet("{advisorId}/available-slots-by-type")]
+        public async Task<ActionResult<ApiResponse<List<AdvisorAvailabilityDTO>>>> GetAvailableSlotsByType(int advisorId, DateTime date, ConsultationType consultationType)
+        {
+            try
+            {
+                var availabilities = await _advisorService.GetAvailableSlotsByTypeAsync(advisorId, date, consultationType);
+                return Ok(ApiResponse<List<AdvisorAvailabilityDTO>>.SuccessResult(availabilities));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult("Failed to retrieve available slots", 500));
             }
         }
     }

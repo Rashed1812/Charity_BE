@@ -1,17 +1,37 @@
 [
-  {
-    "ConsultationName": "استشارات طبية"
-  },
-  {
-    "ConsultationName": "استشارات قانونية"
-  },
-  {
-    "ConsultationName": "استشارات نفسية"
-  },
-  {
-    "ConsultationName": "استشارات أسرية"
-  },
-  {
-    "ConsultationName": "استشارات تعليمية"
-  }
+    {
+        "ConsultationName": "استشارات طبية",
+        "Description": "استشارات متخصصة في حل المشاكل طبية.",
+        "IsActive": true,
+        "CreatedAt": "2025-07-10T09:00:00Z",
+        "UpdatedAt": null
+    },
+    {
+        "ConsultationName": "استشارات قانونية",
+        "Description": "استشارات متخصصة في حل المشاكل قانونية .",
+        "IsActive": true,
+        "CreatedAt": "2025-07-10T09:00:00Z",
+        "UpdatedAt": null
+    },
+    {
+        "ConsultationName": "استشارات نفسية",
+        "Description": "استشارات متخصصة في حل المشاكل نفسية .",
+        "IsActive": true,
+        "CreatedAt": "2025-07-10T09:00:00Z",
+        "UpdatedAt": null
+    },
+    {
+        "ConsultationName": "استشارات أسرية",
+        "Description": "استشارات متخصصة في حل المشاكل الأسرية والعلاقات بين الزوجين.",
+        "IsActive": true,
+        "CreatedAt": "2025-07-10T09:00:00Z",
+        "UpdatedAt": null
+    },
+    {
+        "ConsultationName": "استشارات تعليمية",
+        "Description": "استشارات متخصصة في حل المشاكل تعليمية .",
+        "IsActive": true,
+        "CreatedAt": "2025-07-10T09:00:00Z",
+        "UpdatedAt": null
+    }
 ]
