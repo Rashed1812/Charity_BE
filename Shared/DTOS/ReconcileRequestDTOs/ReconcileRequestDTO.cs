@@ -1,15 +1,22 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using DAL.Data.Models.IdentityModels;
 
-namespace DAL.Data.Models
+namespace Shared.DTOS.ReconcileRequestDTOs
 {
-    public class ReconcileRequest
+    public class ReconcileRequestDTO
     {
-        [Key]
         public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string RequestText { get; set; }
+        public string? UserId { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+    }
 
+    public class CreateReconcileRequestDTO
+    {
         [Required]
         [StringLength(100)]
         public string Name { get; set; }
@@ -26,14 +33,5 @@ namespace DAL.Data.Models
         [Required]
         [StringLength(2000)]
         public string RequestText { get; set; }
-
-        [StringLength(450)]
-        public string? UserId { get; set; }
-
-        [ForeignKey("UserId")]
-        public ApplicationUser? User { get; set; }
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedAt { get; set; }
     }
 } 

@@ -1,3 +1,4 @@
+
 [
     {
         "AdvisorId": 2,
@@ -6,7 +7,8 @@
         "Duration": "00:30:00",
         "ConsultationType": 0,
         "IsBooked": false,
-        "Notes": "موعد محجوز للاستشارة الأسرية",
+        "AdviceRequestId": null,
+        "Notes": "موعد متاح للاستشارة الأسرية",
         "CreatedAt": "2025-07-12T12:00:00Z"
     }
 ]

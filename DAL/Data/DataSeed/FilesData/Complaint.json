@@ -1,8 +1,12 @@
 [
     {
-        "UserId": "b341fdac-176f-4e7f-92ee-05e3e5b624f9",
-        "Title": "Sample Title",
-        "Status": 1,
-        "CreatedAt": "2025-07-03T18:59:38.619899"
+        "UserId": "805062ec-7158-4062-a92f-5778f4b7332d",
+        "Title": "شكوى بخصوص تأخر الرد",
+        "Description": "لقد أرسلت طلب استشارة منذ أسبوع ولم أتلق أي رد حتى الآن.",
+        "Category": 0,
+        "Status": 0,
+        "Priority": "Medium",
+        "CreatedAt": "2025-07-12T14:00:00Z",
+        "Resolution": "قيد المعالجة"
     }
 ]

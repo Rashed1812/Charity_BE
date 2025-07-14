@@ -81,7 +81,7 @@ namespace Charity_BE.Controllers
         // POST: api/advisor
         [HttpPost]
         //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> CreateAdvisor([FromForm] CreateAdvisorDTO createAdvisorDto)
+        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> CreateAdvisor([FromBody] CreateAdvisorDTO createAdvisorDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<AdvisorDTO>.ErrorResult("Invalid input data", 400, 
@@ -95,14 +95,14 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<AdvisorDTO>.ErrorResult("Failed to create advisor", 500));
+                return StatusCode(500, ApiResponse<AdvisorDTO>.ErrorResult(ex.Message, 500));
             }
         }
 
         // PUT: api/advisor/{id}
         [HttpPut("{id}")]
         //[Authorize(Roles = "Admin,Advisor")]
-        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> UpdateAdvisor(int id, [FromForm] UpdateAdvisorDTO updateAdvisorDto)
+        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> UpdateAdvisor(int id, [FromBody] UpdateAdvisorDTO updateAdvisorDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<AdvisorDTO>.ErrorResult("Invalid input data", 400));
@@ -157,7 +157,7 @@ namespace Charity_BE.Controllers
 
         // POST: api/advisor/availability
         [HttpPost("availability")]
-        [Authorize(Roles = "Advisor")]
+        //[Authorize(Roles = "Advisor")]
         public async Task<ActionResult<ApiResponse<AdvisorAvailabilityDTO>>> CreateAvailability([FromBody] CreateAvailabilityDTO createAvailabilityDto)
         {
             if (!ModelState.IsValid)
@@ -197,7 +197,7 @@ namespace Charity_BE.Controllers
 
         // DELETE: api/advisor/availability/{id}
         [HttpDelete("availability/{id}")]
-        [Authorize(Roles = "Advisor")]
+        //[Authorize(Roles = "Advisor")]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteAvailability(int id)
         {
             try
@@ -216,7 +216,7 @@ namespace Charity_BE.Controllers
 
         // GET: api/advisor/{id}/requests
         [HttpGet("{id}/requests")]
-        [Authorize(Roles = "Advisor")]
+        //[Authorize(Roles = "Advisor")]
         public async Task<ActionResult<ApiResponse<List<AdvisorRequestDTO>>>> GetAdvisorRequests(int id)
         {
             try
@@ -232,7 +232,7 @@ namespace Charity_BE.Controllers
 
         // PUT: api/advisor/requests/{requestId}/status
         [HttpPut("requests/{requestId}/status")]
-        [Authorize(Roles = "Advisor")]
+        //[Authorize(Roles = "Advisor")]
         public async Task<ActionResult<ApiResponse<AdvisorRequestDTO>>> UpdateRequestStatus(int requestId, [FromBody] ConsultationStatus status)
         {
             try

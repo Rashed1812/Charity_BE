@@ -36,11 +36,5 @@ namespace DAL.Data.Models
 
         [StringLength(500)]
         public string Requirements { get; set; }
-
-        [StringLength(100)]
-        public string Duration { get; set; }
-
-        [StringLength(100)]
-        public string Cost { get; set; }
     }
 }

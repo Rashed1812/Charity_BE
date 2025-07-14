@@ -77,12 +77,6 @@ namespace BLL.Service
             if (!string.IsNullOrEmpty(updateServiceDto.Requirements))
                 service.Requirements = updateServiceDto.Requirements;
 
-            if (!string.IsNullOrEmpty(updateServiceDto.Duration))
-                service.Duration = updateServiceDto.Duration;
-
-            if (!string.IsNullOrEmpty(updateServiceDto.Cost))
-                service.Cost = updateServiceDto.Cost;
-
             service.UpdatedAt = DateTime.UtcNow;
 
             var updatedService = await _serviceOfferingRepository.UpdateAsync(service);

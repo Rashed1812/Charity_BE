@@ -1,0 +1,20 @@
+﻿[
+    {
+        "Name": "فاطمة الزهراء",
+        "Email": "fatima.z@example.com",
+        "PhoneNumber": "966551122334",
+        "RequestText": "أرغب في طلب مصالحة بخصوص خلاف عائلي قائم.",
+        "UserId": "805062ec-7158-4062-a92f-5778f4b7332d",
+        "CreatedAt": "2025-07-12T11:00:00Z",
+        "UpdatedAt": null
+    },
+    {
+        "Name": "مستخدم زائر",
+        "Email": "visitor@example.com",
+        "PhoneNumber": "966501234567",
+        "RequestText": "استفسار حول إجراءات المصالحة.",
+        "UserId": null,
+        "CreatedAt": "2025-07-13T09:00:00Z",
+        "UpdatedAt": null
+    }
+]
