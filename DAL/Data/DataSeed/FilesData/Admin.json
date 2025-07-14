@@ -1,13 +1,13 @@
 [
     {
-        "FullName": "Sample FullName",
-        "Email": "test_email@example.com",
+        "FullName": "Admin",
+        "Email": "Admin@gmail.com",
         "UserName": "admin",
         "Password": "Admin@123",
-        "Address": "Sample Address",
+        "Address": "Address",
         "Role": "Admin",
         "UserId": "148b2502-57b2-4957-9a88-fedaad0ca1e7",
-        "PhoneNumber": "966500000001",
+        "PhoneNumber": "01011845887",
         "IsActive": true,
         "CreatedAt": "2025-07-01T00:00:00Z"
     }

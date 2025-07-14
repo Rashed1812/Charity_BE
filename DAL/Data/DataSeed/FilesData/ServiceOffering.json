@@ -1,9 +1,13 @@
 [
     {
-        "Title": "Sample Title",
-        "Description": "Sample Description",
-        "ImageUrl": "https://example.com/imageurl",
-        "RedirectUrl": "https://example.com/redirecturl",
-        "IsActive": true
+        "Name": "برنامج تدريبي للمقبلين على الزواج",
+        "Description": "برنامج متكامل لتأهيل الشباب والفتيات للحياة الزوجية.",
+        "Category": "تدريب",
+        "ImageUrl": "https://example.com/images/service1.jpg",
+        "IsActive": true,
+        "CreatedAt": "2025-07-10T11:00:00Z",
+        "ClickCount": 250,
+        "ContactInfo": "للتسجيل: 920012345",
+        "Requirements": "أن يكون المتقدم مقبل على الزواج"
     }
 ]
