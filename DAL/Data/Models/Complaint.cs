@@ -44,7 +44,7 @@ namespace DAL.Data.Models
         public DateTime? ResolvedAt { get; set; }
 
         [StringLength(2000)]
-        public string Resolution { get; set; }
+        public string? Resolution { get; set; }
 
         // Navigation Properties
     }

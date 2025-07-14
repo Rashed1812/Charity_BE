@@ -30,6 +30,7 @@ namespace DAL.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<HelpType> HelpTypes { get; set; }
         public DbSet<HelpRequest> HelpRequests { get; set; }
+        public DbSet<ReconcileRequest> ReconcileRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

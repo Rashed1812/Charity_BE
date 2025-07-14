@@ -49,12 +49,27 @@ namespace BLL.Service
 
         public async Task<AdviceRequestDTO> CreateRequestAsync(string userId, CreateAdviceRequestDTO createRequestDto)
         {
+            var availability = await _advisorRepository.GetAvailabilityByIdAsync(createRequestDto.AdvisorAvailabilityId);
+            if (availability == null)
+                throw new InvalidOperationException("الموعد المتاح غير موجود.");
+            if (availability.IsBooked)
+                throw new InvalidOperationException("هذا الموعد تم حجزه بالفعل.");
+
             var request = _mapper.Map<AdviceRequest>(createRequestDto);
             request.UserId = userId;
             request.Status = ConsultationStatus.Pending;
             request.RequestDate = DateTime.UtcNow;
+            request.AdvisorAvailabilityId = createRequestDto.AdvisorAvailabilityId;
+            request.AdvisorId = availability.AdvisorId;
+
+            availability.IsBooked = true;
+
+            availability.AdviceRequestId = null;
 
             var createdRequest = await _adviceRequestRepository.AddAsync(request);
+            availability.AdviceRequestId = createdRequest.Id;
+            await _advisorRepository.UpdateAvailabilityAsync(availability);
+
             return _mapper.Map<AdviceRequestDTO>(createdRequest);
         }
 

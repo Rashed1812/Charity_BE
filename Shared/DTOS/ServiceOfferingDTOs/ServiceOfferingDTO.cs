@@ -15,8 +15,6 @@ namespace Shared.DTOS.ServiceOfferingDTOs
         public int ClickCount { get; set; }
         public string ContactInfo { get; set; }
         public string Requirements { get; set; }
-        public string Duration { get; set; }
-        public string Cost { get; set; }
     }
 
     public class CreateServiceOfferingDTO
@@ -44,11 +42,6 @@ namespace Shared.DTOS.ServiceOfferingDTOs
         [StringLength(500)]
         public string Requirements { get; set; }
 
-        [StringLength(100)]
-        public string Duration { get; set; }
-
-        [StringLength(100)]
-        public string Cost { get; set; }
     }
 
     public class UpdateServiceOfferingDTO
@@ -72,11 +65,5 @@ namespace Shared.DTOS.ServiceOfferingDTOs
 
         [StringLength(500)]
         public string Requirements { get; set; }
-
-        [StringLength(100)]
-        public string Duration { get; set; }
-
-        [StringLength(100)]
-        public string Cost { get; set; }
     }
 } 

@@ -1,0 +1,23 @@
+﻿[
+    {
+        "Title": "كيفية التعامل مع ضغوط العمل",
+        "Description": "محاضرة فيديو تشرح استراتيجيات فعالة للتعامل مع الضغوط في بيئة العمل.",
+        "Speaker": "د. خالد عبد الرحمن",
+        "Type": 0,
+        "VideoUrl": "https://example.com/videos/lecture1.mp4",
+        "ThumbnailUrl": "https://example.com/thumbnails/lecture1.jpg",
+        "FilePath": "/files/lectures/lecture1.pdf",
+        "FileSize": 1572864,
+        "FileFormat": "pdf",
+        "Duration": 3600,
+        "IsPublished": true,
+        "Status": 1,
+        "CreatedAt": "2025-07-11T10:00:00Z",
+        "PublishedAt": "2025-07-12T10:00:00Z",
+        "ViewCount": 150,
+        "DownloadCount": 30,
+        "ConsultationId": 2,
+        "Tags": "[\"عمل\", \"ضغوط\", \"صحة نفسية\"]",
+        "CreatedBy": "148b2502-57b2-4957-9a88-fedaad0ca1e7"
+    }
+]

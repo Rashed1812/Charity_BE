@@ -1,9 +1,15 @@
 [
     {
-        "Title": "Sample Title",
-        "Content": "Sample Content",
-        "ImageUrl": "https://example.com/imageurl",
-        "PublishDate": "2025-07-03T18:59:38.619177",
-        "IsActive": true
+        "Title": "إطلاق خدمة الاستشارات الجديدة",
+        "Content": "يسرنا أن نعلن عن إطلاق خدمة الاستشارات التربوية الجديدة لمساعدة الآباء والأمهات...",
+        "Summary": "تم إطلاق خدمة جديدة للاستشارات التربوية.",
+        "ImageUrl": "https://example.com/images/news1.jpg",
+        "Author": "فريق الإدارة",
+        "Category": "إعلانات",
+        "IsPublished": true,
+        "CreatedAt": "2025-07-12T08:00:00Z",
+        "PublishedAt": "2025-07-12T08:30:00Z",
+        "ViewCount": 500,
+        "Tags": "[\"جديد\", \"خدمات\", \"استشارات\"]"
     }
 ]

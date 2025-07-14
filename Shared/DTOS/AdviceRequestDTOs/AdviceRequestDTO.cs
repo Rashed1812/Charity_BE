@@ -42,6 +42,9 @@ namespace Shared.DTOS.AdviceRequestDTOs
         public string Priority { get; set; }
         
         public ConsultationType ConsultationType { get; set; } = ConsultationType.Online;
+
+        [Required]
+        public int AdvisorAvailabilityId { get; set; }
     }
 
     public class UpdateAdviceRequestDTO
