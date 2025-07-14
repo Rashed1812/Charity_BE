@@ -22,16 +22,17 @@ namespace BLL.Mapping
         {
             // Admin Mappings
             CreateMap<Admin, AdminDTO>()
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName));
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.User.FullName));
             CreateMap<CreateAdminDTO, Admin>();
             CreateMap<UpdateAdminDTO, Admin>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Advisor Mappings
             CreateMap<Advisor, AdvisorDTO>()
+<<<<<<< Updated upstream
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.fullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.ConsultationName, opt => opt.MapFrom(src => src.Consultation != null ? src.Consultation.ConsultationName : ""))
                 .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
 
@@ -39,26 +40,25 @@ namespace BLL.Mapping
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
                 .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
 
+=======
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName));
+            CreateMap<CreateAdvisorDTO, Advisor>();
+>>>>>>> Stashed changes
             CreateMap<UpdateAdvisorDTO, Advisor>()
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
-                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Advisor Availability Mappings
-            CreateMap<AdvisorAvailability, AdvisorAvailabilityDTO>()
-                .ForMember(dest => dest.AdvisorName, opt => opt.MapFrom(src => src.Advisor.FullName));
-            CreateMap<CreateAvailabilityDTO, AdvisorAvailability>()
-                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
+            CreateMap<AdvisorAvailability, AdvisorAvailabilityDTO>();
+            CreateMap<CreateAvailabilityDTO, AdvisorAvailability>();
             CreateMap<UpdateAvailabilityDTO, AdvisorAvailability>()
-                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Advice Request Mappings
             CreateMap<AdviceRequest, AdviceRequestDTO>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
-                .ForMember(dest => dest.AdvisorName, opt => opt.MapFrom(src => src.Advisor.FullName))
-                .ForMember(dest => dest.ConsultationName, opt => opt.MapFrom(src => src.Consultation.ConsultationName))
-                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
-            CreateMap<CreateAdviceRequestDTO, AdviceRequest>()
-                .ForMember(dest => dest.ConsultationType, opt => opt.MapFrom(src => src.ConsultationType));
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName ))
+                .ForMember(dest => dest.AdvisorName, opt => opt.MapFrom(src => src.Advisor != null ? $"{src.Advisor.FullName}" : null))
+                .ForMember(dest => dest.ConsultationName, opt => opt.MapFrom(src => src.Consultation.ConsultationName));
+            CreateMap<CreateAdviceRequestDTO, AdviceRequest>();
             CreateMap<UpdateAdviceRequestDTO, AdviceRequest>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 

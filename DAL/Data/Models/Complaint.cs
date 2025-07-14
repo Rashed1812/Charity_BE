@@ -28,7 +28,8 @@ namespace DAL.Data.Models
         public string Description { get; set; }
 
         [Required]
-        public ComplaintCategory Category { get; set; }
+        [StringLength(50)]
+        public string Category { get; set; }
 
         [Required]
         public ComplaintStatus Status { get; set; } = ComplaintStatus.Pending;

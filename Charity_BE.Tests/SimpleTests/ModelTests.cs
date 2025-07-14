@@ -42,6 +42,8 @@ namespace Charity_BE.Tests.SimpleTests
                 FullName = "Admin User",
                 Email = "admin@example.com",
                 PhoneNumber = "1234567890",
+                Department = "IT",
+                Position = "Manager",
                 IsActive = true
             };
 
@@ -49,6 +51,7 @@ namespace Charity_BE.Tests.SimpleTests
             admin.Should().NotBeNull();
             admin.Id.Should().Be(1);
             admin.FullName.Should().Be("Admin User");
+            admin.Department.Should().Be("IT");
             admin.IsActive.Should().BeTrue();
         }
 
@@ -106,7 +109,7 @@ namespace Charity_BE.Tests.SimpleTests
                 UserId = "1",
                 Title = "Test Complaint",
                 Description = "Test Description",
-                Category = ComplaintCategory.Other,
+                Category = "General",
                 Status = ComplaintStatus.Pending,
                 Priority = "Medium"
             };

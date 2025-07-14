@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Shared.DTOS.AdvisorDTOs;
 using DAL.Data.Models.IdentityModels;
+using Shared.DTOS.AdvisorDTOs;
 
 namespace DAL.Data.Models
 {
@@ -22,10 +21,6 @@ namespace DAL.Data.Models
 
         [ForeignKey("AdvisorId")]
         public virtual Advisor Advisor { get; set; }
-
-        public int? AdvisorAvailabilityId { get; set; }
-
-        public ConsultationType ConsultationType { get; set; } = ConsultationType.Online;
 
         [Required]
         public int ConsultationId { get; set; }

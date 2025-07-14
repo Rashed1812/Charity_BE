@@ -1,5 +1,14 @@
 [
     {
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        "UserId": "a151e4eb-8a5d-4211-a502-091f8309db27",
+        "Title": "Sample Title",
+        "Status": 1,
+        "CreatedAt": "2025-07-03T18:59:38.619899"
+=======
+>>>>>>> Stashed changes
         "UserId": "805062ec-7158-4062-a92f-5778f4b7332d",
         "Title": "شكوى بخصوص تأخر الرد",
         "Description": "لقد أرسلت طلب استشارة منذ أسبوع ولم أتلق أي رد حتى الآن.",
@@ -8,5 +17,9 @@
         "Priority": "Medium",
         "CreatedAt": "2025-07-12T14:00:00Z",
         "Resolution": "قيد المعالجة"
+<<<<<<< Updated upstream
+=======
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
+>>>>>>> Stashed changes
     }
 ]

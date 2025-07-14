@@ -78,8 +78,8 @@ namespace BLL.Service
             if (!string.IsNullOrEmpty(updateComplaintDto.Description))
                 complaint.Description = updateComplaintDto.Description;
 
-            if (updateComplaintDto.Category.HasValue)
-                complaint.Category = updateComplaintDto.Category.Value;
+            if (!string.IsNullOrEmpty(updateComplaintDto.Category))
+                complaint.Category = updateComplaintDto.Category;
 
             if (!string.IsNullOrEmpty(updateComplaintDto.Priority))
                 complaint.Priority = updateComplaintDto.Priority;

@@ -10,8 +10,6 @@ namespace BLL.ServiceAbstraction
         Task<AdminDTO> CreateAdminAsync(CreateAdminDTO createAdminDto);
         Task<AdminDTO> UpdateAdminAsync(int id, UpdateAdminDTO updateAdminDto);
         Task<bool> DeleteAdminAsync(int id);
-        
-        // Additional methods for AdminController
         Task<object> GetSystemStatisticsAsync();
         Task<object> GetDashboardDataAsync();
         Task<bool> ApproveUserAsync(string userId);
