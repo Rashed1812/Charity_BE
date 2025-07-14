@@ -28,9 +28,15 @@ namespace DAL.Data
         public DbSet<Consultation> Consultations { get; set; }
         public DbSet<Lecture> Lectures { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+<<<<<<< HEAD
+=======
         public DbSet<HelpType> HelpTypes { get; set; }
         public DbSet<HelpRequest> HelpRequests { get; set; }
         public DbSet<ReconcileRequest> ReconcileRequests { get; set; }
+<<<<<<< Updated upstream
+=======
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
+>>>>>>> Stashed changes
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -84,17 +90,6 @@ namespace DAL.Data
                 .HasForeignKey(l => l.CreatedBy)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<AdvisorAvailability>()
-                .HasOne(a => a.AdviceRequest)
-                .WithOne()
-                .HasForeignKey<AdvisorAvailability>(a => a.AdviceRequestId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<AdviceRequest>()
-                .HasOne<AdvisorAvailability>()
-                .WithMany()
-                .HasForeignKey(a => a.AdvisorAvailabilityId)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

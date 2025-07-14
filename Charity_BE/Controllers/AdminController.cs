@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.DTOS.AdminDTOs;
 using Shared.DTOS.Common;
 using BLL.ServiceAbstraction;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Charity_BE.Controllers
 {
@@ -132,19 +128,19 @@ namespace Charity_BE.Controllers
 
         // DELETE: api/admin/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteAdmin(int id)
+        public async Task<ActionResult<ApiResponse<bool>>> DeleteAdmin(int id)
         {
             try
             {
                 var result = await _adminService.DeleteAdminAsync(id);
-                if (result)
-                    return Ok(ApiResponse<object>.SuccessResult(null, "Admin deleted successfully"));
-                return NotFound(ApiResponse<object>.ErrorResult("Admin not found"));
+                if (!result)
+                    return NotFound(ApiResponse<bool>.ErrorResult($"Admin with ID {id} not found", 404));
+
+                return Ok(ApiResponse<bool>.SuccessResult(true, "Admin deleted successfully"));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<object>.ErrorResult(ex.Message));
+                return StatusCode(500, ApiResponse<bool>.ErrorResult("Failed to delete admin", 500));
             }
         }
 
@@ -279,5 +275,18 @@ namespace Charity_BE.Controllers
                 return StatusCode(500, ApiResponse<bool>.ErrorResult("Failed to send notification", 500));
             }
         }
+    }
+
+    public class SuspendUserDTO
+    {
+        public string Reason { get; set; }
+        public DateTime? Until { get; set; }
+    }
+
+    public class SendNotificationDTO
+    {
+        public string Title { get; set; }
+        public string Message { get; set; }
+        public List<string> UserIds { get; set; }
     }
 } 

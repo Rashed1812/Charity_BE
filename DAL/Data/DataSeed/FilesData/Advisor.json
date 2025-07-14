@@ -1,5 +1,13 @@
 [
     {
+<<<<<<< HEAD
+        "UserId": "218ea52f-1312-41eb-ac8f-20e1cb359ee2",
+        "Specialty": "استشارات أسرية",
+        "FullName": "د. أحمد محمد",
+        "Description": "مستشار اجتماعي متخصص في العلاقات الأسرية وحل النزاعات",
+        "ZoomRoomUrl": "https://zoom.us/ahmed-room",
+        "ConsultationId": 1
+=======
         "UserId": "eefd4718-bc68-46e2-865e-a836bd1f2bb1",
         "FullName": "د. أحمد",
         "Specialty": "استشاري أسري",
@@ -13,5 +21,6 @@
         "ConsultationId": 1,
         "ImageUrl": "https://example.com/images/advisors/ali.jpg",
         "ConsultationType": 0
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
     }
 ]

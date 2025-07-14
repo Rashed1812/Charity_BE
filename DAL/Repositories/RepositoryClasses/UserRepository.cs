@@ -48,7 +48,7 @@ namespace DAL.Repositories.RepositoryClasses
             return await _dbcontext.Users.FindAsync(id);
         }
 
-        public new async Task<ApplicationUser> UpdateAsync(ApplicationUser user)
+        public async Task<ApplicationUser> UpdateAsync(ApplicationUser user)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));

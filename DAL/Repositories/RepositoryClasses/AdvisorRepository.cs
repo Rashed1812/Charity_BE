@@ -55,7 +55,7 @@ namespace DAL.Repositories.RepositoryClasses
             return await _dbContext.Advisors
                 .Include(a => a.User)
                 .Include(a => a.Consultation)
-                .Include(a => a.Availabilities.Select(av => new {av.Date, av.Time, av.IsBooked}))
+                .Include(a => a.Availabilities.Select(av => new {av.IsAvailable}))
                 .ToListAsync();
         }
         public async Task<Advisor> GetByIdWithIncludesAsync(int id)
@@ -88,7 +88,7 @@ namespace DAL.Repositories.RepositoryClasses
         {
             return await _dbContext.AdvisorAvailabilities
                 .Where(a => a.AdvisorId == advisorId)
-                .OrderBy(a => a.Date).ThenBy(a => a.Time)
+                .OrderBy(a => a.DayOfWeek).ThenBy(a => a.StartTime)
                 .ToListAsync();
         }
 
@@ -101,9 +101,9 @@ namespace DAL.Repositories.RepositoryClasses
         {
             return await _dbContext.AdvisorAvailabilities.FirstOrDefaultAsync(a => 
                 a.AdvisorId == advisorId && 
-                a.Date == dateTime.Date && 
-                a.Time <= dateTime.TimeOfDay && 
-                a.Time + a.Duration > dateTime.TimeOfDay);
+                a.DayOfWeek == dateTime.DayOfWeek && 
+                a.StartTime <= dateTime.TimeOfDay && 
+                a.EndTime > dateTime.TimeOfDay);
         }
 
         public async Task<AdvisorAvailability> AddAvailabilityAsync(AdvisorAvailability availability)
@@ -136,7 +136,7 @@ namespace DAL.Repositories.RepositoryClasses
 
         public async Task<int> GetBookedAvailabilityByAdvisorAsync(int advisorId)
         {
-            return await _dbContext.AdvisorAvailabilities.CountAsync(a => a.AdvisorId == advisorId && !a.IsBooked);
+            return await _dbContext.AdvisorAvailabilities.CountAsync(a => a.AdvisorId == advisorId && a.IsAvailable);
         }
 
         public async Task<int> GetAdvisorsCountByConsultationAsync(int consultationId)

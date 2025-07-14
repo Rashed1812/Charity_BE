@@ -12,6 +12,8 @@ namespace DAL.Repositories.RepositoryIntrfaces
         Task<int> GetTotalApplicationsCountAsync();
         Task<int> GetApplicationsCountByStatusAsync(VolunteerStatus status);
         Task<List<object>> GetApplicationsByMonthAsync(int months);
+        Task<List<object>> GetApplicationsByAreaOfInterestAsync();
+        Task<double> GetAverageReviewTimeAsync();
         Task<List<VolunteerApplication>> GetRecentApplicationsAsync(int count);
         Task<bool> HasApplicationAsync(string userId);
         Task<List<VolunteerApplication>> GetVolunteerApplicationsByUserAsync(string userId);

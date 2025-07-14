@@ -1,16 +1,28 @@
 [
     {
+<<<<<<< Updated upstream
         "UserId": "805062ec-7158-4062-a92f-5778f4b7332d",
+=======
+<<<<<<< HEAD
+        "UserId": "a151e4eb-8a5d-4211-a502-091f8309db27",
+=======
+        "UserId": "805062ec-7158-4062-a92f-5778f4b7332d",
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
+>>>>>>> Stashed changes
         "AdvisorId": 2,
-        "AdvisorAvailabilityId": 1,
-        "ConsultationType": 0,
-        "ConsultationId": 1,
-        "Title": "طلب استشارة بخصوص مشكلة أسرية",
-        "Description": "أواجه بعض التحديات في التعامل مع ابني المراهق وأحتاج إلى نصيحة.",
+        "AppointmentTime": "2025-07-03T18:59:38.619686",
+        "Notes": "محتاج استشارة في موضوع أسري",
         "Status": 0,
+<<<<<<< HEAD
+        "ConsultationId": 1
+=======
         "Priority": "High",
         "RequestDate": "2025-07-12T10:00:00Z",
         "CreatedAt": "2025-07-12T10:00:00Z",
         "Response" : "لم يتم الرد بعد"
+<<<<<<< Updated upstream
+=======
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
+>>>>>>> Stashed changes
     }
 ]

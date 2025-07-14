@@ -1,5 +1,16 @@
 [
     {
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        "UserId": "a151e4eb-8a5d-4211-a502-091f8309db27",
+        "FullName": "Sample FullName",
+        "Email": "test_email@example.com",
+        "PhoneNumber": "Sample PhoneNumber",
+        "AreaOfInterest": "Sample AreaOfInterest",
+        "Notes": "Sample Notes",
+=======
+>>>>>>> Stashed changes
         "UserId": "805062ec-7158-4062-a92f-5778f4b7332d",
         "FirstName": "سارة",
         "LastName": "عبدالله",
@@ -8,6 +19,10 @@
         "DateOfBirth": "1995-05-20T00:00:00",
         "Address": "123 شارع الملك فهد، الرياض",
         "Education": "بكالوريوس علم نفس",
+<<<<<<< Updated upstream
+=======
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
+>>>>>>> Stashed changes
         "Status": 0,
         "CreatedAt": "2025-07-11T18:00:00Z"
     }

@@ -45,6 +45,7 @@ namespace BLL.Service
             var application = _mapper.Map<VolunteerApplication>(createApplicationDto);
             application.UserId = userId;
             application.Status = VolunteerStatus.Pending;
+            application.AppliedAt = DateTime.UtcNow;
 
             var createdApplication = await _volunteerApplicationRepository.AddAsync(application);
             return _mapper.Map<VolunteerApplicationDTO>(createdApplication);
@@ -79,7 +80,26 @@ namespace BLL.Service
             if (!string.IsNullOrEmpty(updateApplicationDto.Address))
                 application.Address = updateApplicationDto.Address;
 
-         
+            if (!string.IsNullOrEmpty(updateApplicationDto.City))
+                application.City = updateApplicationDto.City;
+
+            if (!string.IsNullOrEmpty(updateApplicationDto.Country))
+                application.Country = updateApplicationDto.Country;
+
+            if (!string.IsNullOrEmpty(updateApplicationDto.Education))
+                application.Education = updateApplicationDto.Education;
+
+            if (!string.IsNullOrEmpty(updateApplicationDto.Skills))
+                application.Skills = updateApplicationDto.Skills;
+
+            if (!string.IsNullOrEmpty(updateApplicationDto.Experience))
+                application.Experience = updateApplicationDto.Experience;
+
+            if (!string.IsNullOrEmpty(updateApplicationDto.Motivation))
+                application.Motivation = updateApplicationDto.Motivation;
+
+            if (!string.IsNullOrEmpty(updateApplicationDto.Availability))
+                application.Availability = updateApplicationDto.Availability;
 
             var updatedApplication = await _volunteerApplicationRepository.UpdateAsync(application);
             return _mapper.Map<VolunteerApplicationDTO>(updatedApplication);
@@ -102,6 +122,10 @@ namespace BLL.Service
                 return null;
 
             application.Status = (VolunteerStatus)Enum.Parse(typeof(VolunteerStatus), reviewDto.Status);
+            application.AdminNotes = reviewDto.AdminNotes;
+            application.ReviewedAt = DateTime.UtcNow;
+            application.ReviewedBy = adminId;
+
             var updatedApplication = await _volunteerApplicationRepository.UpdateAsync(application);
             return _mapper.Map<VolunteerApplicationDTO>(updatedApplication);
         }

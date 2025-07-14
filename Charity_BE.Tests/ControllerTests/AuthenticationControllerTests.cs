@@ -52,6 +52,8 @@ namespace Charity_BE.Tests.ControllerTests
                 FullName = "Admin User",
                 Email = "admin@example.com",
                 PhoneNumber = "1234567890",
+                Department = "IT",
+                Position = "Manager",
                 Password = "Admin123!",
                 ConfirmPassword = "Admin123!"
             };
@@ -59,6 +61,8 @@ namespace Charity_BE.Tests.ControllerTests
             // Act & Assert
             registerAdminDto.Should().NotBeNull();
             registerAdminDto.FullName.Should().Be("Admin User");
+            registerAdminDto.Department.Should().Be("IT");
+            registerAdminDto.Position.Should().Be("Manager");
         }
 
         [Fact]

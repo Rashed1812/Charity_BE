@@ -1,9 +1,8 @@
-﻿using DAL.Data;
+using DAL.Data;
 using DAL.Data.Models;
 using DAL.Repositories.GenericRepositries;
 using DAL.Repositories.RepositoryIntrfaces;
 using Microsoft.EntityFrameworkCore;
-using Shared.DTOS.AdvisorDTOs;
 
 namespace DAL.Repositories.RepositoryClasses
 {
@@ -18,30 +17,32 @@ namespace DAL.Repositories.RepositoryClasses
         public async Task<List<AdvisorAvailability>> GetByAdvisorIdAsync(int advisorId)
         {
             return await _context.AdvisorAvailabilities
-                .Where(aa => aa.AdvisorId == advisorId && !aa.IsBooked)
-                .OrderBy(aa => aa.Date)
-                .ThenBy(aa => aa.Time)
+                .Where(aa => aa.AdvisorId == advisorId && aa.IsAvailable)
+                .OrderBy(aa => aa.DayOfWeek)
+                .ThenBy(aa => aa.StartTime)
                 .ToListAsync();
         }
 
         public async Task<List<AdvisorAvailability>> GetAvailableSlotsAsync(int advisorId, DateTime date)
         {
+            var dayOfWeek = date.DayOfWeek;
             return await _context.AdvisorAvailabilities
                 .Where(aa => aa.AdvisorId == advisorId && 
-                           aa.Date == date && 
-                           !aa.IsBooked)
-                .OrderBy(aa => aa.Time)
+                           aa.DayOfWeek == dayOfWeek && 
+                           aa.IsAvailable)
+                .OrderBy(aa => aa.StartTime)
                 .ToListAsync();
         }
 
         public async Task<bool> IsSlotAvailableAsync(int advisorId, DateTime date, TimeSpan startTime, TimeSpan endTime)
         {
+            var dayOfWeek = date.DayOfWeek;
             var availability = await _context.AdvisorAvailabilities
                 .FirstOrDefaultAsync(aa => aa.AdvisorId == advisorId && 
-                                         aa.Date == date && 
-                                         !aa.IsBooked &&
-                                         aa.Time <= startTime && 
-                                         aa.Time >= endTime);
+                                         aa.DayOfWeek == dayOfWeek && 
+                                         aa.IsAvailable &&
+                                         aa.StartTime <= startTime && 
+                                         aa.EndTime >= endTime);
 
             return availability != null;
         }
@@ -49,7 +50,7 @@ namespace DAL.Repositories.RepositoryClasses
         public async Task<int> GetTotalAvailabilityByAdvisorAsync(int advisorId)
         {
             return await _context.AdvisorAvailabilities
-                .Where(aa => aa.AdvisorId == advisorId && !aa.IsBooked)
+                .Where(aa => aa.AdvisorId == advisorId && aa.IsAvailable)
                 .CountAsync();
         }
 
@@ -58,29 +59,6 @@ namespace DAL.Repositories.RepositoryClasses
             // This would need to be implemented based on your booking logic
             // For now, returning 0 as placeholder
             return 0;
-        }
-        public async Task<List<AdvisorAvailability>> GetAvailableSlotsForDayAsync(int advisorId, DateTime date)
-        {
-            var availabilities = await _context.AdvisorAvailabilities
-                .Where(aa => aa.AdvisorId == advisorId &&
-                             aa.Date == date &&
-                             !aa.IsBooked)
-                .ToListAsync();
-
-
-            var bookedTimes = await _context.AdviceRequests
-                .Where(r => r.AdvisorId == advisorId &&
-                            r.CreatedAt.Date == date.Date &&
-                            (r.Status == ConsultationStatus.Pending || r.Status == ConsultationStatus.Confirmed))
-                .Select(r => r.CreatedAt.TimeOfDay)
-                .ToListAsync();
-
-
-            var availableSlots = availabilities
-                .Where(a => !bookedTimes.Any(bt => bt >= a.Time && bt < a.Time))
-                .ToList();
-
-            return availableSlots;
         }
     }
 } 

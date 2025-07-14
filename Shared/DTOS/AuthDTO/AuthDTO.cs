@@ -61,6 +61,14 @@ namespace Shared.DTOS.AuthDTO
         public string PhoneNumber { get; set; }
 
         [Required]
+        [StringLength(100)]
+        public string? Department { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string? Position { get; set; }
+
+        [Required]
         [StringLength(100, MinimumLength = 6)]
         public string Password { get; set; }
 

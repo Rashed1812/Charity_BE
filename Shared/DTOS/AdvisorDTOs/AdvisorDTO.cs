@@ -9,20 +9,18 @@ using Microsoft.AspNetCore.Http;
 
 namespace Shared.DTOS.AdvisorDTOs
 {
-    public enum ConsultationType
-    {
-        Online = 0,
-        InPerson = 1,
-        Both = 2
-    }
-
     public class AdvisorDTO
     {
         public int Id { get; set; }
         public string UserId { get; set; }
         public string FullName { get; set; }
         public string UserName { get; set; }
+<<<<<<< Updated upstream
         public string fullName { get; set; }
+=======
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+>>>>>>> Stashed changes
         public string Specialty { get; set; }
         public string Description { get; set; }
         public string ZoomRoomUrl { get; set; }
@@ -34,8 +32,6 @@ namespace Shared.DTOS.AdvisorDTOs
         public DateTime? UpdatedAt { get; set; }
         public int? ConsultationId { get; set; }
         public string ConsultationName { get; set; }
-        public string? ImageUrl { get; set; }
-        public ConsultationType ConsultationType { get; set; }
         
         // Statistics
         public int TotalConsultations { get; set; }
@@ -72,6 +68,7 @@ namespace Shared.DTOS.AdvisorDTOs
         [Required]
         [StringLength(100, MinimumLength = 6)]
         public string Password { get; set; }
+<<<<<<< Updated upstream
 
         //[StringLength(500)]
         //public string? ImageUrl { get; set; }
@@ -79,12 +76,15 @@ namespace Shared.DTOS.AdvisorDTOs
         public IFormFile? Image { get; set; }
 
         public ConsultationType ConsultationType { get; set; } = ConsultationType.Online;
+=======
+>>>>>>> Stashed changes
     }
 
     public class UpdateAdvisorDTO
     {
         [StringLength(50)]
         public string FullName { get; set; }
+
 
         [StringLength(100)]
         public string Specialty { get; set; }
@@ -104,6 +104,7 @@ namespace Shared.DTOS.AdvisorDTOs
         public int? ConsultationId { get; set; }
 
         public bool? IsActive { get; set; }
+<<<<<<< Updated upstream
 
         //[StringLength(500)]
         //public string? ImageUrl { get; set; }
@@ -125,6 +126,8 @@ namespace Shared.DTOS.AdvisorDTOs
         public string? Notes { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+=======
+>>>>>>> Stashed changes
     }
 
     public class CreateAvailabilityDTO
@@ -133,33 +136,33 @@ namespace Shared.DTOS.AdvisorDTOs
         public int AdvisorId { get; set; }
 
         [Required]
-        public DateTime Date { get; set; }
+        public DayOfWeek DayOfWeek { get; set; }
 
         [Required]
-        public TimeSpan Time { get; set; }
+        public TimeSpan StartTime { get; set; }
 
         [Required]
-        public TimeSpan Duration { get; set; } = TimeSpan.FromMinutes(30);
+        public TimeSpan EndTime { get; set; }
 
-        public ConsultationType ConsultationType { get; set; } = ConsultationType.Online;
-
-        public string? Notes { get; set; }
+        [StringLength(200)]
+        public string Notes { get; set; }
     }
 
     public class UpdateAvailabilityDTO
     {
-        public DateTime? Date { get; set; }
-        public TimeSpan? Time { get; set; }
-        public TimeSpan? Duration { get; set; }
-        public ConsultationType? ConsultationType { get; set; }
-        public bool? IsBooked { get; set; }
-        public string? Notes { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
+        public bool? IsAvailable { get; set; }
+        public string Notes { get; set; }
     }
 
     public class BulkAvailabilityDTO
     {
         [Required]
-        public List<CreateAvailabilityDTO> Availabilities { get; set; } = new List<CreateAvailabilityDTO>();
+        public int AdvisorId { get; set; }
+
+        [Required]
+        public List<CreateAvailabilityDTO> Availabilities { get; set; }
     }
 
     public enum ConsultationStatus

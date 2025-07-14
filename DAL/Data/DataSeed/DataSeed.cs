@@ -25,6 +25,8 @@ namespace DAL.Data.DataSeed
 
             try
             {
+<<<<<<< HEAD
+=======
                 // 1. إضافة Consultation
                 if (!_DbContext.Set<Consultation>().Any())
                 {
@@ -55,16 +57,17 @@ namespace DAL.Data.DataSeed
                     {
                         Console.WriteLine($"Consultation.json file not found at both paths");
                     }
+<<<<<<< Updated upstream
                 }
                 else
                 {
                     Console.WriteLine("Consultations already exist in database, skipping...");
+=======
+>>>>>>> Stashed changes
                 }
-                await _DbContext.SaveChangesAsync();
-
-                // 2. إضافة ApplicationUser
-                if (!_DbContext.Set<ApplicationUser>().Any())
+                else
                 {
+<<<<<<< Updated upstream
                     var userDataPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\DAL\Data\DataSeed\FilesData\User.json"));
                     Console.WriteLine($"Looking for User.json at: {userDataPath}");
                     
@@ -96,12 +99,64 @@ namespace DAL.Data.DataSeed
                 else
                 {
                     Console.WriteLine("Users already exist in database, skipping...");
+=======
+                    Console.WriteLine("Consultations already exist in database, skipping...");
+>>>>>>> Stashed changes
                 }
                 await _DbContext.SaveChangesAsync();
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
 
-                // 3. إضافة Advisor مع ربط UserId تلقائيًا
+                if (!_DbContext.Set<Admin>().Any())
+                {
+<<<<<<< HEAD
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\Admin.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<Admin>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<Admin>().AddRangeAsync(list);
+=======
+                    var userDataPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\DAL\Data\DataSeed\FilesData\User.json"));
+                    Console.WriteLine($"Looking for User.json at: {userDataPath}");
+                    
+                    if (!File.Exists(userDataPath))
+                    {
+                        var alternativePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\DAL\Data\DataSeed\FilesData\User.json"));
+                        Console.WriteLine($"Trying alternative path: {alternativePath}");
+                        if (File.Exists(alternativePath))
+                        {
+                            userDataPath = alternativePath;
+                        }
+                    }
+                    
+                    if (File.Exists(userDataPath))
+                    {
+                        var data = File.OpenRead(userDataPath);
+                        var list = await JsonSerializer.DeserializeAsync<List<ApplicationUser>>(data);
+                        if (list is not null && list.Any())
+                        {
+                            await _DbContext.Set<ApplicationUser>().AddRangeAsync(list);
+                            Console.WriteLine($"Added {list.Count} users to database");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"User.json file not found at both paths");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Users already exist in database, skipping...");
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
+                }
+
                 if (!_DbContext.Set<Advisor>().Any())
                 {
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\Advisor.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<Advisor>>(data);
+=======
+>>>>>>> Stashed changes
                     var usersInDb = _DbContext.Users.ToList();
                     var advisorDataPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\DAL\Data\DataSeed\FilesData\Advisor.json"));
                     Console.WriteLine($"Looking for Advisor.json at: {advisorDataPath}");
@@ -153,12 +208,11 @@ namespace DAL.Data.DataSeed
                 {
                     var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\AdvisorAvailability.json");
                     var list = await JsonSerializer.DeserializeAsync<List<AdvisorAvailability>>(data);
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
                     if (list is not null && list.Any())
-                        await _DbContext.Set<AdvisorAvailability>().AddRangeAsync(list);
+                        await _DbContext.Set<Advisor>().AddRangeAsync(list);
                 }
-                await _DbContext.SaveChangesAsync();
 
-                // 5. إضافة AdviceRequest
                 if (!_DbContext.Set<AdviceRequest>().Any())
                 {
                     var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\AdviceRequest.json");
@@ -166,8 +220,8 @@ namespace DAL.Data.DataSeed
                     if (list is not null && list.Any())
                         await _DbContext.Set<AdviceRequest>().AddRangeAsync(list);
                 }
-                await _DbContext.SaveChangesAsync();
 
+<<<<<<< Updated upstream
                 if (!_DbContext.Set<Complaint>().Any())
                 {
                     var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\Complaint.json");
@@ -235,19 +289,162 @@ namespace DAL.Data.DataSeed
                         await _DbContext.Set<Admin>().AddRangeAsync(list);
                 }
 
+=======
+<<<<<<< HEAD
+                if (!_DbContext.Set<AdvisorAvailability>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\AdvisorAvailability.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<AdvisorAvailability>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<AdvisorAvailability>().AddRangeAsync(list);
+                }
+
+                if (!_DbContext.Set<Complaint>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\Complaint.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<Complaint>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<Complaint>().AddRangeAsync(list);
+                }
+
+                if (!_DbContext.Set<NewsItem>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\NewsItem.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<NewsItem>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<NewsItem>().AddRangeAsync(list);
+                }
+
+                if (!_DbContext.Set<ServiceOffering>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\ServiceOffering.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<ServiceOffering>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<ServiceOffering>().AddRangeAsync(list);
+                }
+                if (!_DbContext.Set<Consultation>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\Consultation.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<Consultation>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<Consultation>().AddRangeAsync(list);
+                }
+
+                if (!_DbContext.Set<ApplicationUser>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\User.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<ApplicationUser>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<ApplicationUser>().AddRangeAsync(list);
+                }
+
+                if (!_DbContext.Set<VolunteerApplication>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\VolunteerApplication.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<VolunteerApplication>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<VolunteerApplication>().AddRangeAsync(list);
+                }
+
+=======
+                if (!_DbContext.Set<Complaint>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\Complaint.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<Complaint>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<Complaint>().AddRangeAsync(list);
+                }
+
+                if (!_DbContext.Set<NewsItem>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\NewsItem.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<NewsItem>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<NewsItem>().AddRangeAsync(list);
+                }
+                if (!_DbContext.Set<HelpType>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\HelpType.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<HelpType>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<HelpType>().AddRangeAsync(list);
+                }
+                if (!_DbContext.Set<HelpRequest>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\HelpRequest.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<HelpRequest>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<HelpRequest>().AddRangeAsync(list);
+                }
+                if (!_DbContext.Set<Lecture>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\Lecture.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<Lecture>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<Lecture>().AddRangeAsync(list);
+                }
+                if (!_DbContext.Set<ReconcileRequest>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\ReconcileRequest.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<ReconcileRequest>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<ReconcileRequest>().AddRangeAsync(list);
+                }
+                if (!_DbContext.Set<ServiceOffering>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\ServiceOffering.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<ServiceOffering>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<ServiceOffering>().AddRangeAsync(list);
+                }
+
+                if (!_DbContext.Set<VolunteerApplication>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\VolunteerApplication.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<VolunteerApplication>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<VolunteerApplication>().AddRangeAsync(list);
+                }
+
+                if (!_DbContext.Set<Admin>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\Admin.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<Admin>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<Admin>().AddRangeAsync(list);
+                }
+
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
+>>>>>>> Stashed changes
                 if (!_DbContext.Set<Notification>().Any())
                 {
                     var notifications = new List<Notification>
                     {
                         new Notification {
+<<<<<<< Updated upstream
                             UserId = "148b2502-57b2-4957-9a88-fedaad0ca1e7",
+=======
+<<<<<<< HEAD
+                            UserId = "fda4d803-19d4-4292-ac3d-d28ac87c86a9",
+=======
+                            UserId = "148b2502-57b2-4957-9a88-fedaad0ca1e7",
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
+>>>>>>> Stashed changes
                             Title = "تنبيه تجريبي للأدمن",
                             Message = "تمت إضافة شكوى جديدة.",
                             Type = NotificationType.Complaint,
                             CreatedAt = DateTime.UtcNow
                         },
                         new Notification {
+<<<<<<< Updated upstream
                             UserId = "805062ec-7158-4062-a92f-5778f4b7332d",
+=======
+<<<<<<< HEAD
+                            UserId = "11bd190a-608d-4da4-8cb2-cb45c3d16ff7",
+=======
+                            UserId = "805062ec-7158-4062-a92f-5778f4b7332d",
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
+>>>>>>> Stashed changes
                             Title = "تنبيه تجريبي للمستخدم",
                             Message = "تم تغيير حالة الشكوى الخاصة بك.",
                             Type = NotificationType.Complaint,

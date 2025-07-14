@@ -2,6 +2,12 @@
 [
     {
         "AdvisorId": 2,
+<<<<<<< HEAD
+        "Date": "2025-07-03T00:00:00",
+        "StartTime": "01:00:00",
+        "EndTime": "02:00:00",
+        "IsBooked": false
+=======
         "Date": "2025-08-01T00:00:00",
         "Time": "14:00:00",
         "Duration": "00:30:00",
@@ -10,5 +16,6 @@
         "AdviceRequestId": null,
         "Notes": "موعد متاح للاستشارة الأسرية",
         "CreatedAt": "2025-07-12T12:00:00Z"
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
     }
 ]

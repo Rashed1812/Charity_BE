@@ -1,24 +1,46 @@
 using AutoMapper;
 using BLL.ServiceAbstraction;
 using DAL.Repositories.RepositoryIntrfaces;
+using DAL.Data.Models;
 using DAL.Data.Models.IdentityModels;
-using Microsoft.AspNetCore.Identity;
 using Shared.DTOS.AdminDTOs;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Service
 {
     public class AdminService : IAdminService
     {
         private readonly IAdminRepository _adminRepository;
-        private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
+        private readonly IAdviceRequestRepository _adviceRequestRepository;
+        private readonly IComplaintRepository _complaintRepository;
+        private readonly IVolunteerRepository _volunteerRepository;
+        private readonly IServiceOfferingRepository _serviceOfferingRepository;
+        private readonly ILectureRepository _lectureRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public AdminService(IAdminRepository adminRepository, IMapper mapper, 
-            UserManager<ApplicationUser> userManager)
+        public AdminService(
+            IAdminRepository adminRepository,
+            IUserRepository userRepository,
+            IAdviceRequestRepository adviceRequestRepository,
+            IComplaintRepository complaintRepository,
+            IVolunteerRepository volunteerRepository,
+            IServiceOfferingRepository serviceOfferingRepository,
+            ILectureRepository lectureRepository,
+            UserManager<ApplicationUser> userManager,
+            IMapper mapper)
         {
             _adminRepository = adminRepository;
-            _mapper = mapper;
+            _userRepository = userRepository;
+            _adviceRequestRepository = adviceRequestRepository;
+            _complaintRepository = complaintRepository;
+            _volunteerRepository = volunteerRepository;
+            _serviceOfferingRepository = serviceOfferingRepository;
+            _lectureRepository = lectureRepository;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         public async Task<List<AdminDTO>> GetAllAdminsAsync()
@@ -41,35 +63,40 @@ namespace BLL.Service
 
         public async Task<AdminDTO> CreateAdminAsync(CreateAdminDTO createAdminDto)
         {
-            // Check if user already exists
-            var existingUser = await _userManager.FindByEmailAsync(createAdminDto.Email);
-            if (existingUser != null)
-                throw new InvalidOperationException("User with this email already exists");
+            // Check if email is unique
+            if (!await _adminRepository.IsEmailUniqueAsync(createAdminDto.Email))
+                throw new InvalidOperationException("Email already exists");
 
-            // Create ApplicationUser
+            // Check if phone is unique
+            if (!await _adminRepository.IsPhoneUniqueAsync(createAdminDto.PhoneNumber))
+                throw new InvalidOperationException("Phone number already exists");
+
+            // Create user first
             var user = new ApplicationUser
             {
                 UserName = createAdminDto.Email,
                 Email = createAdminDto.Email,
+                PhoneNumber = createAdminDto.PhoneNumber,
                 FullName = createAdminDto.FullName,
-                EmailConfirmed = true,
-                PhoneNumberConfirmed = true
+                IsActive = true
             };
 
-            var result = await _userManager.CreateAsync(user, createAdminDto.Password);
-            if (!result.Succeeded)
-                throw new InvalidOperationException($"Failed to create user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+            var userResult = await _userManager.CreateAsync(user, createAdminDto.Password);
+            if (!userResult.Succeeded)
+                throw new InvalidOperationException($"Failed to create user: {string.Join(", ", userResult.Errors.Select(e => e.Description))}");
 
             // Add to Admin role
             await _userManager.AddToRoleAsync(user, "Admin");
 
-            // Create Admin record
+            // Create admin
             var admin = new Admin
             {
                 UserId = user.Id,
                 FullName = createAdminDto.FullName,
                 Email = createAdminDto.Email,
                 PhoneNumber = createAdminDto.PhoneNumber,
+                Department = createAdminDto.Department,
+                Position = createAdminDto.Position,
                 IsActive = true
             };
 
@@ -83,7 +110,27 @@ namespace BLL.Service
             if (admin == null)
                 return null;
 
-            _mapper.Map(updateAdminDto, admin);
+            // Update admin properties
+            if (!string.IsNullOrEmpty(updateAdminDto.FullName))
+                admin.FullName = updateAdminDto.FullName;
+
+            if (!string.IsNullOrEmpty(updateAdminDto.Email))
+                admin.Email = updateAdminDto.Email;
+
+            if (!string.IsNullOrEmpty(updateAdminDto.PhoneNumber))
+                admin.PhoneNumber = updateAdminDto.PhoneNumber;
+
+            if (!string.IsNullOrEmpty(updateAdminDto.Department))
+                admin.Department = updateAdminDto.Department;
+
+            if (!string.IsNullOrEmpty(updateAdminDto.Position))
+                admin.Position = updateAdminDto.Position;
+
+            if (updateAdminDto.IsActive.HasValue)
+                admin.IsActive = updateAdminDto.IsActive.Value;
+
+            admin.UpdatedAt = DateTime.UtcNow;
+
             var updatedAdmin = await _adminRepository.UpdateAsync(admin);
             return _mapper.Map<AdminDTO>(updatedAdmin);
         }
@@ -94,40 +141,38 @@ namespace BLL.Service
             if (admin == null)
                 return false;
 
+            // Delete user
+            var user = await _userManager.FindByIdAsync(admin.UserId);
+            if (user != null)
+                await _userManager.DeleteAsync(user);
+
+            // Delete admin
             await _adminRepository.DeleteAsync(admin);
             return true;
         }
 
-        // Additional methods implementation
         public async Task<object> GetSystemStatisticsAsync()
         {
-            // TODO: Implement system statistics logic
-            // This should return statistics like total users, total requests, etc.
+            // This would typically include various system statistics
+            var allAdmins = await _adminRepository.GetAllAsync();
             return new
             {
-                TotalUsers = 0,
-                TotalRequests = 0,
-                TotalTrips = 0,
-                ActiveDrivers = 0,
-                ActiveNurses = 0
+                TotalUsers = await _userManager.Users.CountAsync(),
+                TotalAdmins = allAdmins.Count(),
+                ActiveUsers = await _userManager.Users.CountAsync(u => u.IsActive),
+                // Add more statistics as needed
             };
         }
 
         public async Task<object> GetDashboardDataAsync()
         {
-            // TODO: Implement dashboard data logic
-            // This should return data for admin dashboard
+            // This would typically include dashboard-specific data
             return new
             {
-                RecentRequests = new List<object>(),
-                RecentTrips = new List<object>(),
-                SystemAlerts = new List<object>(),
-                QuickStats = new
-                {
-                    PendingRequests = 0,
-                    ActiveTrips = 0,
-                    CompletedTrips = 0
-                }
+                RecentUsers = await _userManager.Users
+                    .Where(u => u.CreatedAt >= DateTime.UtcNow.AddDays(-7))
+                    .CountAsync(),
+                // Add more dashboard data as needed
             };
         }
 
@@ -137,8 +182,8 @@ namespace BLL.Service
             if (user == null)
                 return false;
 
-            // TODO: Implement user approval logic
-            // This might involve updating user status, sending notifications, etc.
+            user.IsActive = true;
+            await _userManager.UpdateAsync(user);
             return true;
         }
 
@@ -148,8 +193,8 @@ namespace BLL.Service
             if (user == null)
                 return false;
 
-            // TODO: Implement user rejection logic
-            // This might involve updating user status, sending notifications, etc.
+            user.IsActive = false;
+            await _userManager.UpdateAsync(user);
             return true;
         }
 
@@ -159,8 +204,8 @@ namespace BLL.Service
             if (user == null)
                 return false;
 
-            // TODO: Implement user suspension logic
-            // This might involve updating user status, setting suspension period, etc.
+            user.IsActive = false;
+            await _userManager.UpdateAsync(user);
             return true;
         }
 
@@ -170,22 +215,20 @@ namespace BLL.Service
             if (user == null)
                 return false;
 
-            // TODO: Implement user activation logic
-            // This might involve updating user status, sending notifications, etc.
+            user.IsActive = true;
+            await _userManager.UpdateAsync(user);
             return true;
         }
 
         public async Task<List<object>> GetSystemLogsAsync(DateTime? fromDate, DateTime? toDate, string logLevel)
         {
-            // TODO: Implement system logs retrieval logic
-            // This should return system logs based on the provided filters
+            // This would typically query a logging system
             return new List<object>();
         }
 
         public async Task<bool> SendSystemNotificationAsync(string title, string message, List<string> userIds)
         {
-            // TODO: Implement system notification logic
-            // This should send notifications to the specified users
+            // This would typically send notifications to users
             return true;
         }
     }

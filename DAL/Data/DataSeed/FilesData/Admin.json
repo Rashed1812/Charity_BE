@@ -6,9 +6,13 @@
         "Password": "Admin@123",
         "Address": "Address",
         "Role": "Admin",
+<<<<<<< HEAD
+        "UserId": "fda4d803-19d4-4292-ac3d-d28ac87c86a9"
+=======
         "UserId": "148b2502-57b2-4957-9a88-fedaad0ca1e7",
         "PhoneNumber": "01011845887",
         "IsActive": true,
         "CreatedAt": "2025-07-01T00:00:00Z"
+>>>>>>> e8c8153619cc53aaad71f6042edd59cb485b2764
     }
 ]
