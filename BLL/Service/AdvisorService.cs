@@ -188,7 +188,6 @@ namespace BLL.Service
 
         public async Task<AdvisorAvailabilityDTO> CreateAvailabilityAsync(CreateAvailabilityDTO createAvailabilityDto)
         {
-            // تحقق من عدم وجود موعد بنفس الوقت لنفس المستشار
             var existing = await _availabilityRepository.GetByAdvisorIdAsync(createAvailabilityDto.AdvisorId);
             if (existing.Any(a => a.Date.Date == createAvailabilityDto.Date.Date && a.Time == createAvailabilityDto.Time))
             {
