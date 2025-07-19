@@ -103,6 +103,14 @@ namespace Charity_BE
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IHelpTypeRepository, HelpTypeRepository>();
+            builder.Services.AddScoped<IHelpRequestRepository, HelpRequestRepository>();
+            builder.Services.AddScoped<IReconcileRequestRepository, ReconcileRequestRepository>();
+            builder.Services.AddScoped<IMediationRepository, MediationRepository>();
+            builder.Services.AddScoped<IConsultationRepository, ConsultationRepository>();
+            builder.Services.AddScoped<IMediationService, MediationService>();
+            builder.Services.AddScoped<IHelpTypeService, HelpTypeService>();
+            builder.Services.AddScoped<IHelpRequestService, HelpRequestService>();
 
 
             // Service Registrations
@@ -132,17 +140,16 @@ namespace Charity_BE
                 options.AddPolicy("AllowFrontend",
                     builder => builder.AllowAnyOrigin()
                                       .AllowAnyHeader()
-                                      .AllowAnyMethod());
+                                      .AllowAnyMethod()
+                                      );
             });
 
             var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
+            app.UseStaticFiles();
+           
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

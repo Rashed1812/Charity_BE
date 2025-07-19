@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Shared.DTOS.AdvisorDTOs
 {
@@ -70,8 +71,9 @@ namespace Shared.DTOS.AdvisorDTOs
         [StringLength(100, MinimumLength = 6)]
         public string Password { get; set; }
 
-        [StringLength(500)]
-        public string? ImageUrl { get; set; }
+        //[StringLength(500)]
+        public IFormFile? Image { get; set; }
+        //public string? ImageUrl { get; set; }
 
         public ConsultationType ConsultationType { get; set; } = ConsultationType.Online;
     }
@@ -100,9 +102,9 @@ namespace Shared.DTOS.AdvisorDTOs
 
         public bool? IsActive { get; set; }
 
-        [StringLength(500)]
-        public string? ImageUrl { get; set; }
-
+        //[StringLength(500)]
+        //public string? ImageUrl { get; set; }
+        public IFormFile? Image { get; set; }
         public ConsultationType? ConsultationType { get; set; }
     }
 

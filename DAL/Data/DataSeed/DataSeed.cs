@@ -234,6 +234,13 @@ namespace DAL.Data.DataSeed
                     if (list is not null && list.Any())
                         await _DbContext.Set<Admin>().AddRangeAsync(list);
                 }
+                if (!_DbContext.Set<Mediation>().Any())
+                {
+                    var data = File.OpenRead(@"..\DAL\Data\DataSeed\FilesData\Mediation.json");
+                    var list = await JsonSerializer.DeserializeAsync<List<Mediation>>(data);
+                    if (list is not null && list.Any())
+                        await _DbContext.Set<Mediation>().AddRangeAsync(list);
+                }
 
                 if (!_DbContext.Set<Notification>().Any())
                 {
@@ -272,7 +279,7 @@ namespace DAL.Data.DataSeed
             try
             {
                 // Step 1: Create Roles if not exist
-                string[] roles = { "Admin", "User", "Advisor" };
+                string[] roles = { "Admin", "User", "Advisor", "Mediation" };
                 foreach (var role in roles)
                 {
                     if (!await _roleManager.RoleExistsAsync(role))

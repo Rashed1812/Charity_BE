@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace Shared.DTOS.NewsDTOs
@@ -16,7 +17,7 @@ namespace Shared.DTOS.NewsDTOs
         public DateTime? PublishedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int ViewCount { get; set; }
-        public List<string> Tags { get; set; }
+        public string Tags { get; set; }
     }
 
     public class CreateNewsItemDTO
@@ -33,15 +34,17 @@ namespace Shared.DTOS.NewsDTOs
         [StringLength(500)]
         public string Summary { get; set; }
 
-        [StringLength(500)]
-        public string ImageUrl { get; set; }
+        //[StringLength(500)]
+        //public string ImageUrl { get; set; }
+        [Required]
+        public IFormFile Image { get; set; }
 
         [Required]
         [StringLength(100)]
         public string Category { get; set; }
 
         public bool IsPublished { get; set; }
-        public List<string> Tags { get; set; }
+        public string Tags { get; set; }
     }
 
     public class UpdateNewsItemDTO
@@ -55,13 +58,12 @@ namespace Shared.DTOS.NewsDTOs
         [StringLength(500)]
         public string Summary { get; set; }
 
-        [StringLength(500)]
-        public string ImageUrl { get; set; }
+        public IFormFile? Image { get; set; }
 
         [StringLength(100)]
-        public string Category { get; set; }
+        public string? Category { get; set; }
 
         public bool? IsPublished { get; set; }
-        public List<string> Tags { get; set; }
+        public string Tags { get; set; }
     }
 } 

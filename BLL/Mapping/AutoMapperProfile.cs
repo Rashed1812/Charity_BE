@@ -13,6 +13,7 @@ using Shared.DTOS.ServiceOfferingDTOs;
 using Shared.DTOS.UserDTO;
 using Shared.DTOS.VolunteerDTOs;
 using Shared.DTOS.NotificationDTOs;
+using Shared.DTOS.MediationDTOs;
 
 namespace BLL.Mapping
 {
@@ -76,8 +77,17 @@ namespace BLL.Mapping
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Lecture Mappings
-            CreateMap<Lecture, LectureDTO>();
-            CreateMap<CreateLectureDTO, Lecture>();
+            CreateMap<Lecture, LectureDTO>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.ToString()))
+                .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => DeserializeTags(src.Tags)))
+                .ForMember(dest => dest.ConsultationName, opt => opt.MapFrom(src => src.Consultation != null ? src.Consultation.ConsultationName : null))
+                .ForMember(dest => dest.CreatedByName, opt => opt.MapFrom(src => src.CreatedByUser != null ? src.CreatedByUser.FullName : null));
+            CreateMap<CreateLectureDTO, Lecture>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => SerializeTags(src.Tags)));
+            CreateMap<LectureDTO, Lecture>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => Enum.Parse<LectureType>(src.Type)))
+                .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => SerializeTags(src.Tags)));
             CreateMap<UpdateLectureDTO, Lecture>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
@@ -116,6 +126,30 @@ namespace BLL.Mapping
             // Notification Mappings
             CreateMap<Notification, NotificationDTO>();
             CreateMap<NotificationCreateDTO, Notification>();
+
+            // Mediation Mappings
+            CreateMap<Mediation, Shared.DTOS.MediationDTOs.MediationDTO>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl));
+            CreateMap<Shared.DTOS.MediationDTOs.CreateMediationDTO, Mediation>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName));
+            CreateMap<Shared.DTOS.MediationDTOs.UpdateMediationDTO, Mediation>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+        }
+
+        private static List<string> DeserializeTags(string tags)
+        {
+            return string.IsNullOrEmpty(tags)
+                ? new List<string>()
+                : System.Text.Json.JsonSerializer.Deserialize<List<string>>(tags);
+        }
+
+        private static string SerializeTags(List<string> tags)
+        {
+            return tags != null
+                ? System.Text.Json.JsonSerializer.Serialize(tags)
+                : null;
         }
     }
 } 

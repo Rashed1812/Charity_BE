@@ -4,6 +4,7 @@ using Shared.DTOS.AdviceRequestDTOs;
 using Shared.DTOS.Common;
 using BLL.ServiceAbstraction;
 using Shared.DTOS.AdvisorDTOs;
+using System.Security.Claims;
 
 namespace Charity_BE.Controllers
 {
@@ -56,7 +57,7 @@ namespace Charity_BE.Controllers
 
         // GET: api/advicerequest/{id}
         [HttpGet("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<ApiResponse<AdviceRequestDTO>>> GetRequestById(int id)
         {
             try
@@ -75,26 +76,25 @@ namespace Charity_BE.Controllers
 
         // POST: api/advicerequest
         [HttpPost]
-        [Authorize]
-        public async Task<ActionResult<ApiResponse<AdviceRequestDTO>>> CreateRequest([FromBody] CreateAdviceRequestDTO createRequestDto)
+        //[Authorize]
+        public async Task<ActionResult<ApiResponse<AdviceRequestDTO>>> CreateRequest([FromQuery] string userId,[FromBody] CreateAdviceRequestDTO createRequestDto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ApiResponse<AdviceRequestDTO>.ErrorResult("Invalid input data", 400, 
+                return BadRequest(ApiResponse<AdviceRequestDTO>.ErrorResult("Invalid input data", 400,
                     ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList()));
 
             try
             {
-                var userId = User.FindFirst("sub")?.Value;
                 if (string.IsNullOrEmpty(userId))
-                    return Unauthorized(ApiResponse<AdviceRequestDTO>.ErrorResult("User not authenticated", 401));
+                    return BadRequest(ApiResponse<AdviceRequestDTO>.ErrorResult("User ID is required", 400));
 
                 var request = await _adviceRequestService.CreateRequestAsync(userId, createRequestDto);
-                return CreatedAtAction(nameof(GetRequestById), new { id = request.Id }, 
+                return CreatedAtAction(nameof(GetRequestById), new { id = request.Id },
                     ApiResponse<AdviceRequestDTO>.SuccessResult(request, "Request created successfully"));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<AdviceRequestDTO>.ErrorResult("Failed to create request", 500));
+                return StatusCode(500, ApiResponse<AdviceRequestDTO>.ErrorResult(ex.Message, 500));
             }
         }
 

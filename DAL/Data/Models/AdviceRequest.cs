@@ -57,7 +57,7 @@ namespace DAL.Data.Models
         public DateTime? CompletedDate { get; set; }
 
         [StringLength(2000)]
-        public string Response { get; set; }
+        public string Response { get; set; } = "لم يتم الرد بعد";
 
         public int? Rating { get; set; }
 

@@ -28,9 +28,9 @@ namespace DAL.Data.Models.IdentityModels
 
         public bool IsActive { get; set; } = true;
 
-        // Navigation properties
         public Advisor? Advisor { get; set; }
         public Admin? Admin { get; set; }
+        public Mediation? Mediation { get; set; }
         public virtual ICollection<AdviceRequest> AdviceRequests { get; set; } = new List<AdviceRequest>();
         public virtual ICollection<Complaint> Complaints { get; set; } = new List<Complaint>();
         public virtual ICollection<VolunteerApplication> VolunteerApplications { get; set; } = new List<VolunteerApplication>();

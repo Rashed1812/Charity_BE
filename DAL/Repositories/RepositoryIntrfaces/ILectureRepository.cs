@@ -7,7 +7,8 @@ namespace DAL.Repositories.RepositoryIntrfaces
     public interface ILectureRepository : IGenericRepository<Lecture>
     {
         // Basic CRUD operations inherited from IGenericRepository
-        
+        Task<Lecture> GetByIdWithRelatedData(int id);
+        Task<List<Lecture>> GetAllWithRelatedDataAsync();
         // Custom queries
         Task<List<Lecture>> GetPublishedLecturesAsync();
         Task<List<Lecture>> GetByConsultationIdAsync(int consultationId);
@@ -25,8 +26,8 @@ namespace DAL.Repositories.RepositoryIntrfaces
         Task<int> GetLecturesCountByTypeAsync(LectureType type);
         
         // File operations
-        Task<bool> UpdateVideoFilePathAsync(int lectureId, string filePath, string fileName, long fileSize, string contentType);
-        Task<bool> DeleteVideoFileAsync(int lectureId);
+        // Task<bool> UpdateVideoFilePathAsync(int lectureId, string filePath, string fileName, long fileSize, string contentType);
+        // Task<bool> DeleteVideoFileAsync(int lectureId);
         
         // View and download tracking
         Task<bool> IncrementViewCountAsync(int lectureId);

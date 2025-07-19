@@ -28,7 +28,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<List<AdvisorDTO>>.ErrorResult("Failed to retrieve advisors", 500));
+                return StatusCode(500, ApiResponse<List<AdvisorDTO>>.ErrorResult(ex.Message, 500));
             }
 
         }
@@ -42,7 +42,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<List<AdvisorDTO>>.ErrorResult("Failed to retrieve advisors", 500));
+                return StatusCode(500, ApiResponse<List<AdvisorDTO>>.ErrorResult(ex.Message, 500));
             }
         }
         // GET: api/advisor/{id}
@@ -59,7 +59,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<AdvisorDTO>.ErrorResult("Failed to retrieve advisor", 500));
+                return StatusCode(500, ApiResponse<AdvisorDTO>.ErrorResult(ex.Message, 500));
             }
         }
 
@@ -74,14 +74,14 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<List<AdvisorDTO>>.ErrorResult("Failed to retrieve advisors", 500));
+                return StatusCode(500, ApiResponse<List<AdvisorDTO>>.ErrorResult(ex.Message, 500));
             }
         }
 
         // POST: api/advisor
         [HttpPost]
         //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> CreateAdvisor([FromBody] CreateAdvisorDTO createAdvisorDto)
+        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> CreateAdvisor([FromForm] CreateAdvisorDTO createAdvisorDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<AdvisorDTO>.ErrorResult("Invalid input data", 400, 
@@ -95,14 +95,14 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<AdvisorDTO>.ErrorResult("Failed to create advisor", 500));
+                return StatusCode(500, ApiResponse<AdvisorDTO>.ErrorResult(ex.Message, 500));
             }
         }
 
         // PUT: api/advisor/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Advisor")]
-        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> UpdateAdvisor(int id, [FromBody] UpdateAdvisorDTO updateAdvisorDto)
+        //[Authorize(Roles = "Admin,Advisor")]
+        public async Task<ActionResult<ApiResponse<AdvisorDTO>>> UpdateAdvisor(int id, [FromForm] UpdateAdvisorDTO updateAdvisorDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<AdvisorDTO>.ErrorResult("Invalid input data", 400));
@@ -117,13 +117,13 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<AdvisorDTO>.ErrorResult("Failed to update advisor", 500));
+                return StatusCode(500, ApiResponse<AdvisorDTO>.ErrorResult(ex.Message, 500));
             }
         }
 
         // DELETE: api/advisor/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteAdvisor(int id)
         {
             try
@@ -136,7 +136,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<bool>.ErrorResult("Failed to delete advisor", 500));
+                return StatusCode(500, ApiResponse<bool>.ErrorResult(ex.Message, 500));
             }
         }
 
@@ -151,7 +151,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult("Failed to retrieve availability", 500));
+                return StatusCode(500, ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult(ex.Message, 500));
             }
         }
 
@@ -171,7 +171,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<AdvisorAvailabilityDTO>.ErrorResult("Failed to create availability", 500));
+                return StatusCode(500, ApiResponse<AdvisorAvailabilityDTO>.ErrorResult(ex.Message, 500));
             }
         }
 
@@ -191,7 +191,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult("Failed to create bulk availability", 500));
+                return StatusCode(500, ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult(ex.Message, 500));
             }
         }
 
@@ -210,7 +210,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<bool>.ErrorResult("Failed to delete availability", 500));
+                return StatusCode(500, ApiResponse<bool>.ErrorResult(ex.Message, 500));
             }
         }
 
@@ -226,7 +226,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<List<AdvisorRequestDTO>>.ErrorResult("Failed to retrieve requests", 500));
+                return StatusCode(500, ApiResponse<List<AdvisorRequestDTO>>.ErrorResult(ex.Message, 500));
             }
         }
 
@@ -245,7 +245,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<AdvisorRequestDTO>.ErrorResult("Failed to update request status", 500));
+                return StatusCode(500, ApiResponse<AdvisorRequestDTO>.ErrorResult(ex.Message, 500));
             }
         }
         // GET: api/advisor/{advisorId}/available-slots
@@ -259,7 +259,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult("Failed to retrieve available slots", 500));
+                return StatusCode(500, ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult(ex.Message, 500));
             }
         }
 
@@ -274,7 +274,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult("Failed to retrieve available slots", 500));
+                return StatusCode(500, ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult(ex.Message, 500));
             }
         }
     }

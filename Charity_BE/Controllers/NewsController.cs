@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOS.NewsDTOs;
 using Shared.DTOS.Common;
 using BLL.ServiceAbstraction;
 using Shared.DTOS.ServiceOfferingDTOs;
+using System.Security.Claims;
 
 namespace Charity_BE.Controllers
 {
@@ -29,7 +30,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<List<NewsItemDTO>>.ErrorResult("Failed to retrieve news", 500));
+                return StatusCode(500, ApiResponse<List<NewsItemDTO>>.ErrorResult(ex.Message, 500));
             }
         }
 
@@ -68,24 +69,23 @@ namespace Charity_BE.Controllers
 
         // POST: api/news
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<NewsItemDTO>>> CreateNews([FromBody] CreateNewsItemDTO createNewsDto)
+        //[Authorize(Roles = "Admin")]ذ
+        public async Task<ActionResult<ApiResponse<NewsItemDTO>>> CreateNews([FromForm] CreateNewsItemDTO createNewsDto, [FromQuery] string adminId)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ApiResponse<NewsItemDTO>.ErrorResult("Invalid input data", 400, 
+                return BadRequest(ApiResponse<NewsItemDTO>.ErrorResult("Invalid input data", 400,
                     ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList()));
 
             try
             {
-                var adminId = User.FindFirst("sub")?.Value;
                 if (string.IsNullOrEmpty(adminId))
-                    return Unauthorized(ApiResponse<NewsItemDTO>.ErrorResult("Admin not authenticated", 401));
+                    return BadRequest(ApiResponse<NewsItemDTO>.ErrorResult("Admin ID is required", 400));
 
                 var news = await _newsService.CreateNewsAsync(adminId, createNewsDto);
-                return CreatedAtAction(nameof(GetNewsById), new { id = news.Id }, 
+                return CreatedAtAction(nameof(GetNewsById), new { id = news.Id },
                     ApiResponse<NewsItemDTO>.SuccessResult(news, "News created successfully"));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, ApiResponse<NewsItemDTO>.ErrorResult("Failed to create news", 500));
             }
@@ -93,8 +93,8 @@ namespace Charity_BE.Controllers
 
         // PUT: api/news/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<NewsItemDTO>>> UpdateNews(int id, [FromBody] UpdateNewsItemDTO updateNewsDto)
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResponse<NewsItemDTO>>> UpdateNews(int id, [FromForm] UpdateNewsItemDTO updateNewsDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<NewsItemDTO>.ErrorResult("Invalid input data", 400));
@@ -115,7 +115,7 @@ namespace Charity_BE.Controllers
 
         // DELETE: api/news/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteNews(int id)
         {
             try
@@ -128,7 +128,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<bool>.ErrorResult("Failed to delete news", 500));
+                return StatusCode(500, ApiResponse<bool>.ErrorResult(ex.Message, 500));
             }
         }
 

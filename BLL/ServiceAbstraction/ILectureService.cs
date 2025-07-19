@@ -15,9 +15,9 @@ namespace BLL.ServiceAbstraction
         Task<bool> DeleteLectureAsync(int id);
         Task<LectureDTO> PublishLectureAsync(int id);
         Task<LectureDTO> UnpublishLectureAsync(int id);
+        Task<LectureDTO> UploadVideoAsync(string adminId, LectureUploadDTO uploadDto);
 
         // File Upload Management
-        Task<LectureDTO> UploadVideoAsync(string adminId, LectureUploadDTO uploadDto);
         Task<bool> DeleteVideoAsync(int lectureId);
         Task<string> GetVideoStreamUrlAsync(int lectureId);
 
@@ -38,7 +38,6 @@ namespace BLL.ServiceAbstraction
         Task<bool> UpdateThumbnailAsync(int lectureId, string thumbnailUrl);
 
         // Validation
-        Task<bool> ValidateVideoFileAsync(IFormFile videoFile);
         Task<bool> ValidateExternalUrlAsync(string url);
     }
 } 

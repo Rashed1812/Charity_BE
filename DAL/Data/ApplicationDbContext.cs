@@ -31,6 +31,7 @@ namespace DAL.Data
         public DbSet<HelpType> HelpTypes { get; set; }
         public DbSet<HelpRequest> HelpRequests { get; set; }
         public DbSet<ReconcileRequest> ReconcileRequests { get; set; }
+        public DbSet<Mediation> Mediations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -46,6 +47,11 @@ namespace DAL.Data
                 .HasOne(u => u.Admin)
                 .WithOne(a => a.User)
                 .HasForeignKey<Admin>(a => a.UserId);
+
+            builder.Entity<ApplicationUser>()
+                .HasOne(u => u.Mediation)
+                .WithOne(m => m.User)
+                .HasForeignKey<Mediation>(m => m.UserId);
 
 
             builder.Entity<Advisor>()

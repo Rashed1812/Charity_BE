@@ -1,0 +1,12 @@
+﻿[
+    {
+        "UserId": "ffd23a69-8d58-4cd4-b81d-af8a2569e446",
+        "FullName": "محمد أحمد",
+        "ImageUrl": "https://example.com/image.jpg",
+        "IsActive": true,
+        "IsAvailable": true,
+        "CreatedAt": "2024-01-01T00:00:00Z",
+        "PhoneNumber": "+201234567890",
+        "Email": "mediation@example.com"
+    }
+]

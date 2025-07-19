@@ -12,6 +12,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using DAL.Data.Models;
 using DAL.Repositories.RepositoryClasses;
+using BLL.Services.FileService;
 
 namespace BLL.Service
 {
@@ -50,7 +51,7 @@ namespace BLL.Service
 
         public async Task<AdvisorDTO> GetAdvisorByIdAsync(int id)
         {
-            var advisor = await _advisorRepository.GetByIdAsync(id);
+            var advisor = await _advisorRepository.GetAdvisorByIdWithRelatedDataAsync(id);
             return _mapper.Map<AdvisorDTO>(advisor);
         }
 
@@ -89,7 +90,8 @@ namespace BLL.Service
 
             // Add to Advisor role
             await _userManager.AddToRoleAsync(user, "Advisor");
-
+            FileService fileService = new FileService();
+          var imgUrl= await fileService.UploadFileAsync(createAdvisorDto.Image,"advisorImage");
             // Create advisor
             var advisor = new Advisor
             {
@@ -101,6 +103,7 @@ namespace BLL.Service
                 PhoneNumber = createAdvisorDto.PhoneNumber,
                 Email = createAdvisorDto.Email,
                 ConsultationId = createAdvisorDto.ConsultationId,
+                ImageUrl = imgUrl,
                 IsActive = true
             };
 
@@ -110,13 +113,19 @@ namespace BLL.Service
 
         public async Task<AdvisorDTO> UpdateAdvisorAsync(int id, UpdateAdvisorDTO updateAdvisorDto)
         {
-            var advisor = await _advisorRepository.GetByIdAsync(id);
+            var advisor = await _advisorRepository.GetAdvisorByIdWithRelatedDataAsync(id);
+            //var advisrUser = await _userManager.FindByIdAsync(advisor.UserId);
+
+            
             if (advisor == null)
                 return null;
 
             // Update advisor properties
             if (!string.IsNullOrEmpty(updateAdvisorDto.FullName))
+            {
                 advisor.FullName = updateAdvisorDto.FullName;
+                advisor.User.FullName = updateAdvisorDto.FullName;
+            }
 
             if (!string.IsNullOrEmpty(updateAdvisorDto.Specialty))
                 advisor.Specialty = updateAdvisorDto.Specialty;
@@ -138,7 +147,14 @@ namespace BLL.Service
 
             if (updateAdvisorDto.IsActive.HasValue)
                 advisor.IsActive = updateAdvisorDto.IsActive.Value;
-
+            
+            if(updateAdvisorDto.Image!.FileName.Length > 0)
+            {
+                FileService fs = new FileService();
+                fs.DeleteFile(advisor.ImageUrl!);
+                var imgUrl = await fs.UploadFileAsync(updateAdvisorDto.Image, "advisorImage");
+                advisor.ImageUrl = imgUrl;
+            }
             advisor.UpdatedAt = DateTime.UtcNow;
 
             var updatedAdvisor = await _advisorRepository.UpdateAsync(advisor);
@@ -156,8 +172,11 @@ namespace BLL.Service
             if (user != null)
                 await _userManager.DeleteAsync(user);
 
+            FileService fs = new FileService();
+            fs.DeleteFile(advisor.ImageUrl!);
+
             // Delete advisor
-            await _advisorRepository.DeleteAsync(advisor);
+            await _advisorRepository.DeleteAsync(id);
             return true;
         }
 
@@ -211,7 +230,6 @@ namespace BLL.Service
             var availability = await _availabilityRepository.GetByIdAsync(id);
             if (availability == null)
                 return false;
-
             return await _availabilityRepository.DeleteAsync(availability);
         }
 

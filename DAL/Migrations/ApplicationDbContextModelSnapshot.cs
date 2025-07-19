@@ -511,6 +511,52 @@ namespace DAL.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("DAL.Data.Models.IdentityModels.Mediation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Mediations");
+                });
+
             modelBuilder.Entity("DAL.Data.Models.Lecture", b =>
                 {
                     b.Property<int>("Id")
@@ -543,19 +589,6 @@ namespace DAL.Migrations
 
                     b.Property<int?>("Duration")
                         .HasColumnType("int");
-
-                    b.Property<string>("FileFormat")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<long?>("FileSize")
-                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsPublished")
                         .HasColumnType("bit");
@@ -1099,6 +1132,17 @@ namespace DAL.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DAL.Data.Models.IdentityModels.Mediation", b =>
+                {
+                    b.HasOne("DAL.Data.Models.IdentityModels.ApplicationUser", "User")
+                        .WithOne("Mediation")
+                        .HasForeignKey("DAL.Data.Models.IdentityModels.Mediation", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DAL.Data.Models.Lecture", b =>
                 {
                     b.HasOne("DAL.Data.Models.IdentityModels.ApplicationUser", null)
@@ -1219,6 +1263,8 @@ namespace DAL.Migrations
                     b.Navigation("Complaints");
 
                     b.Navigation("CreatedLectures");
+
+                    b.Navigation("Mediation");
 
                     b.Navigation("VolunteerApplications");
                 });

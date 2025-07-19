@@ -21,7 +21,7 @@ namespace Charity_BE.Controllers
 
         // POST: api/reconcilerequest
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin,Mediation")]
         public async Task<ActionResult<ApiResponse<ReconcileRequestDTO>>> Create([FromBody] CreateReconcileRequestDTO dto)
         {
             if (!ModelState.IsValid)
@@ -35,7 +35,7 @@ namespace Charity_BE.Controllers
 
         // GET: api/reconcilerequest/user
         [HttpGet("user")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Mediation")]
         public async Task<ActionResult<ApiResponse<List<ReconcileRequestDTO>>>> GetUserRequests()
         {
             var userId = User.FindFirst("sub")?.Value;
@@ -45,7 +45,7 @@ namespace Charity_BE.Controllers
 
         // GET: api/reconcilerequest
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Mediation")]
         public async Task<ActionResult<ApiResponse<List<ReconcileRequestDTO>>>> GetAll()
         {
             var requests = await _service.GetAllAsync();
@@ -54,7 +54,7 @@ namespace Charity_BE.Controllers
 
         // GET: api/reconcilerequest/{id}
         [HttpGet("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Mediation")]
         public async Task<ActionResult<ApiResponse<ReconcileRequestDTO>>> GetById(int id)
         {
             var request = await _service.GetByIdAsync(id);
@@ -65,7 +65,7 @@ namespace Charity_BE.Controllers
 
         // DELETE: api/reconcilerequest/{id}
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Mediation")]
         public async Task<ActionResult<ApiResponse<bool>>> Delete(int id)
         {
             var userId = User.FindFirst("sub")?.Value;

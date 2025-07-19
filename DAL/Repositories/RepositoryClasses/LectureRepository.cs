@@ -196,36 +196,6 @@ namespace DAL.Repositories.RepositoryClasses
             return await _context.Lectures.CountAsync(l => l.Type == type && l.IsPublished);
         }
 
-        public async Task<bool> UpdateVideoFilePathAsync(int lectureId, string filePath, string fileName, long fileSize, string contentType)
-        {
-            var lecture = await _context.Lectures.FindAsync(lectureId);
-            if (lecture == null)
-                return false;
-
-            lecture.FilePath = filePath;
-            lecture.FileFormat = Path.GetExtension(fileName);
-            lecture.FileSize = fileSize;
-            lecture.UpdatedAt = DateTime.UtcNow;
-
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> DeleteVideoFileAsync(int lectureId)
-        {
-            var lecture = await _context.Lectures.FindAsync(lectureId);
-            if (lecture == null)
-                return false;
-
-            lecture.FilePath = null;
-            lecture.FileSize = 0;
-            lecture.FileFormat = null;
-            lecture.UpdatedAt = DateTime.UtcNow;
-
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
         public async Task<bool> IncrementViewCountAsync(int lectureId)
         {
             var lecture = await _context.Lectures.FindAsync(lectureId);
@@ -375,6 +345,22 @@ namespace DAL.Repositories.RepositoryClasses
         public async Task<bool> HasLecturesAsync(string authorId)
         {
             return await _context.Lectures.AnyAsync(l => l.CreatedBy == authorId);
+        }
+
+        public async Task<Lecture> GetByIdWithRelatedData(int id)
+        {
+            return await _context.Lectures
+                .Include(l => l.Consultation)
+                .Include(l => l.CreatedByUser)
+                .FirstOrDefaultAsync(l => l.Id == id);
+        }
+
+        public async Task<List<Lecture>> GetAllWithRelatedDataAsync()
+        {
+            return await _context.Lectures
+                .Include(l => l.Consultation)
+                .Include(l => l.CreatedByUser)
+                .ToListAsync();
         }
     }
 } 

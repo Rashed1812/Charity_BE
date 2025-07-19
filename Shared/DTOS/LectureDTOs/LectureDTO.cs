@@ -12,9 +12,6 @@ namespace Shared.DTOS.LectureDTOs
         public string Type { get; set; }
         public string VideoUrl { get; set; }
         public string ThumbnailUrl { get; set; }
-        public string FilePath { get; set; }
-        public long FileSize { get; set; }
-        public string FileFormat { get; set; }
         public int Duration { get; set; }
         public bool IsPublished { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -98,8 +95,8 @@ namespace Shared.DTOS.LectureDTOs
         [Required]
         public LectureType Type { get; set; }
 
-        [Required]
-        public IFormFile VideoFile { get; set; }
+        [StringLength(500)]
+        public string VideoUrl { get; set; }
 
         public int? ConsultationId { get; set; }
 

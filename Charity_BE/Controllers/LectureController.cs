@@ -67,8 +67,7 @@ namespace Charity_BE.Controllers
 
         // POST: api/lecture
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<LectureDTO>>> CreateLecture([FromBody] CreateLectureDTO createLectureDto)
+        public async Task<ActionResult<ApiResponse<LectureDTO>>> CreateLecture([FromBody] CreateLectureDTO createLectureDto, [FromQuery] string adminId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<LectureDTO>.ErrorResult("بيانات غير صحيحة", 400, 
@@ -76,9 +75,8 @@ namespace Charity_BE.Controllers
 
             try
             {
-                var adminId = User.FindFirst("sub")?.Value;
                 if (string.IsNullOrEmpty(adminId))
-                    return Unauthorized(ApiResponse<LectureDTO>.ErrorResult("المدير غير مصادق عليه", 401));
+                    return BadRequest(ApiResponse<LectureDTO>.ErrorResult("يجب إدخال رقم تعريف الأدمن", 400));
 
                 var lecture = await _lectureService.CreateLectureAsync(adminId, createLectureDto);
                 return CreatedAtAction(nameof(GetLectureById), new { id = lecture.Id }, 
@@ -92,8 +90,7 @@ namespace Charity_BE.Controllers
 
         // POST: api/lecture/upload
         [HttpPost("upload")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<LectureDTO>>> UploadVideo([FromForm] LectureUploadDTO uploadDto)
+        public async Task<ActionResult<ApiResponse<LectureDTO>>> UploadVideo([FromBody] LectureUploadDTO uploadDto, [FromQuery] string adminId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<LectureDTO>.ErrorResult("بيانات غير صحيحة", 400, 
@@ -101,13 +98,8 @@ namespace Charity_BE.Controllers
 
             try
             {
-                var adminId = User.FindFirst("sub")?.Value;
                 if (string.IsNullOrEmpty(adminId))
-                    return Unauthorized(ApiResponse<LectureDTO>.ErrorResult("المدير غير مصادق عليه", 401));
-
-                // Validate video file
-                if (!await _lectureService.ValidateVideoFileAsync(uploadDto.VideoFile))
-                    return BadRequest(ApiResponse<LectureDTO>.ErrorResult("ملف الفيديو غير صالح", 400));
+                    return BadRequest(ApiResponse<LectureDTO>.ErrorResult("يجب إدخال رقم تعريف الأدمن", 400));
 
                 var lecture = await _lectureService.UploadVideoAsync(adminId, uploadDto);
                 return CreatedAtAction(nameof(GetLectureById), new { id = lecture.Id }, 

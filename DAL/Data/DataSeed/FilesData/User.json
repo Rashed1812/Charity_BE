@@ -22,5 +22,13 @@
         "Email": "Admin@gmail.com",
         "Password": "P@ssw0rd",
         "Role": "Admin"
+    },
+    {
+        "FullName": "Mediation",
+        "Address": "القاهرة",
+        "UserName": "Mediation@gmail.com",
+        "Email": "Mediation@gmail.com",
+        "Password": "P@ssw0rd",
+        "Role": "Mediation"
     }
 ]

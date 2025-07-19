@@ -57,7 +57,7 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<AuthResponseDTO>.ErrorResult("Failed to register", 500));
+                return StatusCode(500, ApiResponse<AuthResponseDTO>.ErrorResult(ex.Message, 500));
             }
         }
 

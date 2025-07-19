@@ -19,7 +19,7 @@ namespace Charity_BE.Controllers
 
         // GET: api/complaint
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<List<ComplaintDTO>>>> GetAllComplaints()
         {
             try
@@ -29,13 +29,13 @@ namespace Charity_BE.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<List<ComplaintDTO>>.ErrorResult("Failed to retrieve complaints", 500));
+                return StatusCode(500, ApiResponse<List<ComplaintDTO>>.ErrorResult(ex.Message, 500));
             }
         }
 
         // GET: api/complaint/user
         [HttpGet("user")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<ApiResponse<List<ComplaintDTO>>>> GetUserComplaints()
         {
             try

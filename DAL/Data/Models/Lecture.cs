@@ -31,14 +31,6 @@ namespace DAL.Data.Models
         [StringLength(500)]
         public string? ThumbnailUrl { get; set; }
 
-        [StringLength(500)]
-        public string FilePath { get; set; }
-
-        public long? FileSize { get; set; }
-
-        [StringLength(50)]
-        public string FileFormat { get; set; }
-
         public int? Duration { get; set; } // in seconds
 
         public bool IsPublished { get; set; } = false;
@@ -67,14 +59,6 @@ namespace DAL.Data.Models
         [ForeignKey("CreatedBy")]
         public ApplicationUser CreatedByUser { get; set; }
     }
-
-    //public enum LectureType
-    //{
-    //    Video,
-    //    Audio,
-    //    Document,
-    //    Presentation
-    //}
 
     public enum LectureStatus
     {

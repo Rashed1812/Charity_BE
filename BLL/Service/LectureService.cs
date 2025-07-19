@@ -39,7 +39,7 @@ namespace BLL.Service
 
         public async Task<List<LectureDTO>> GetAllLecturesAsync()
         {
-            var lectures = await _lectureRepository.GetAllAsync();
+            var lectures = await _lectureRepository.GetAllWithRelatedDataAsync();
             return _mapper.Map<List<LectureDTO>>(lectures);
         }
 
@@ -51,7 +51,7 @@ namespace BLL.Service
 
         public async Task<LectureDTO> GetLectureByIdAsync(int id)
         {
-            var lecture = await _lectureRepository.GetByIdAsync(id);
+            var lecture = await _lectureRepository.GetByIdWithRelatedData(id);
             return _mapper.Map<LectureDTO>(lecture);
         }
 
@@ -73,7 +73,6 @@ namespace BLL.Service
 
         public async Task<LectureDTO> UploadVideoAsync(string adminId, LectureUploadDTO uploadDto)
         {
-            // This would typically handle file upload logic
             var lecture = new Lecture
             {
                 Title = uploadDto.Title,
@@ -83,8 +82,7 @@ namespace BLL.Service
                 ConsultationId = uploadDto.ConsultationId,
                 CreatedBy = adminId,
                 CreatedAt = DateTime.UtcNow,
-                FileSize = uploadDto.VideoFile.Length,
-                FileFormat = Path.GetExtension(uploadDto.VideoFile.FileName),
+                VideoUrl = uploadDto.VideoUrl,
                 Tags = uploadDto.Tags != null ? System.Text.Json.JsonSerializer.Serialize(uploadDto.Tags) : null
             };
 
@@ -92,16 +90,7 @@ namespace BLL.Service
             return _mapper.Map<LectureDTO>(createdLecture);
         }
 
-        public async Task<bool> ValidateVideoFileAsync(IFormFile videoFile)
-        {
-            if (videoFile == null || videoFile.Length == 0)
-                return false;
-
-            var allowedExtensions = new[] { ".mp4", ".avi", ".mov", ".wmv", ".flv" };
-            var extension = Path.GetExtension(videoFile.FileName).ToLowerInvariant();
-            
-            return allowedExtensions.Contains(extension) && videoFile.Length <= 500 * 1024 * 1024; // 500MB max
-        }
+        // تم حذف دالة UploadVideoAsync ودالة ValidateVideoFileAsync وكل ما يتعلق برفع ملف الفيديو
 
         public async Task<LectureDTO> UpdateLectureAsync(int id, UpdateLectureDTO updateLectureDto)
         {
