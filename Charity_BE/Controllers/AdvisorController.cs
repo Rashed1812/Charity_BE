@@ -214,6 +214,29 @@ namespace Charity_BE.Controllers
             }
         }
 
+        // PUT: api/advisor/availability/{id}
+        [HttpPut("availability/{id}")]
+        //[Authorize(Roles = "Advisor")]
+        public async Task<ActionResult<ApiResponse<AdvisorAvailabilityDTO>>> UpdateAvailability(int id, [FromBody] UpdateAvailabilityDTO updateAvailabilityDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ApiResponse<AdvisorAvailabilityDTO>.ErrorResult("Invalid input data", 400));
+
+            try
+            {
+                var availability = await _advisorService.UpdateAvailabilityAsync(id, updateAvailabilityDto);
+                return Ok(ApiResponse<AdvisorAvailabilityDTO>.SuccessResult(availability, "Availability updated successfully"));
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ApiResponse<AdvisorAvailabilityDTO>.ErrorResult(ex.Message, 404));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<AdvisorAvailabilityDTO>.ErrorResult(ex.Message, 500));
+            }
+        }
+
         // GET: api/advisor/{id}/requests
         [HttpGet("{id}/requests")]
         [Authorize(Roles = "Advisor")]
