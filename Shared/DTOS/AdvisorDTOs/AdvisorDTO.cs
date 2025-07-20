@@ -166,4 +166,9 @@ namespace Shared.DTOS.AdvisorDTOs
         Cancelled = 3,
         InProgress = 4
     }
+
+    public class RescheduleRequestDTO
+    {
+        public int NewAvailabilityId { get; set; }
+    }
 }

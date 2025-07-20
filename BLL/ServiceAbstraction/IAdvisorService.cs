@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.DTOS.AdviceRequestDTOs;
 using Shared.DTOS.AdvisorDTOs;
 
 namespace BLL.ServiceAbstraction
@@ -29,6 +30,8 @@ namespace BLL.ServiceAbstraction
         // Consultation Requests
         Task<List<AdvisorRequestDTO>> GetAdvisorRequestsAsync(int advisorId);
         Task<AdvisorRequestDTO> UpdateRequestStatusAsync(int requestId, ConsultationStatus status);
+        Task<AdviceRequestDTO> RescheduleRequestAsync(int requestId, string advisorId, RescheduleRequestDTO dto);
+        Task<bool> DeleteRequestAsync(int requestId, string advisorId);
 
         // Statistics
         Task<object> GetAdvisorStatisticsAsync(int advisorId);

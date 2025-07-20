@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.DTOS.AdvisorDTOs;
 using Shared.DTOS.Common;
 using BLL.ServiceAbstraction;
+using Shared.DTOS.AdviceRequestDTOs;
 
 namespace Charity_BE.Controllers
 {
@@ -298,6 +299,58 @@ namespace Charity_BE.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<List<AdvisorAvailabilityDTO>>.ErrorResult(ex.Message, 500));
+            }
+        }
+
+        // PUT: api/advisor/requests/{requestId}/reschedule
+        [HttpPut("requests/{requestId}/reschedule")]
+        [Authorize(Roles = "Advisor")]
+        public async Task<ActionResult<ApiResponse<AdviceRequestDTO>>> RescheduleRequest(int requestId, [FromBody] RescheduleRequestDTO dto, [FromQuery] string advisorId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(advisorId))
+                    return BadRequest(ApiResponse<AdviceRequestDTO>.ErrorResult("AdvisorId is required", 400));
+
+                var request = await _advisorService.RescheduleRequestAsync(requestId, advisorId, dto);
+                if (request == null)
+                    return NotFound(ApiResponse<AdviceRequestDTO>.ErrorResult($"Request with ID {requestId} not found", 404));
+
+                return Ok(ApiResponse<AdviceRequestDTO>.SuccessResult(request, "Request rescheduled successfully"));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<AdviceRequestDTO>.ErrorResult("Failed to reschedule request", 500));
+            }
+        }
+
+        // DELETE: api/advisor/requests/{requestId}
+        [HttpDelete("requests/{requestId}")]
+        [Authorize(Roles = "Advisor")]
+        public async Task<ActionResult<ApiResponse<bool>>> DeleteRequest(int requestId, [FromQuery] string advisorId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(advisorId))
+                    return BadRequest(ApiResponse<bool>.ErrorResult("AdvisorId is required", 400));
+
+                var result = await _advisorService.DeleteRequestAsync(requestId, advisorId);
+                if (!result)
+                    return NotFound(ApiResponse<bool>.ErrorResult($"Request with ID {requestId} not found", 404));
+
+                return Ok(ApiResponse<bool>.SuccessResult(true, "Request deleted successfully"));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<bool>.ErrorResult("Failed to delete request", 500));
             }
         }
     }

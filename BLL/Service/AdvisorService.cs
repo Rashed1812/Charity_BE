@@ -259,6 +259,39 @@ namespace BLL.Service
             return _mapper.Map<AdvisorRequestDTO>(updatedRequest);
         }
 
+        public async Task<AdviceRequestDTO> RescheduleRequestAsync(int requestId, string advisorId, RescheduleRequestDTO dto)
+        {
+            var request = await _adviceRequestRepository.GetByIdAsync(requestId);
+            if (request == null)
+                return null;
+
+            // تحقق أن الطلب يخص هذا المستشار
+            if (request.AdvisorId == null || request.AdvisorId.ToString() != advisorId)
+                throw new UnauthorizedAccessException("You are not allowed to reschedule this request.");
+
+            // تحديث الموعد
+            request.AdvisorAvailabilityId = dto.NewAvailabilityId;
+            request.Status = ConsultationStatus.Pending; // أو أي حالة مناسبة
+            request.RequestDate = DateTime.UtcNow;
+
+            var updatedRequest = await _adviceRequestRepository.UpdateAsync(request);
+            return _mapper.Map<AdviceRequestDTO>(updatedRequest);
+        }
+
+        public async Task<bool> DeleteRequestAsync(int requestId, string advisorId)
+        {
+            var request = await _adviceRequestRepository.GetByIdAsync(requestId);
+            if (request == null)
+                return false;
+
+            // تحقق أن الطلب يخص هذا المستشار
+            if (request.AdvisorId == null || request.AdvisorId.ToString() != advisorId)
+                throw new UnauthorizedAccessException("You are not allowed to delete this request.");
+
+            await _adviceRequestRepository.DeleteAsync(request);
+            return true;
+        }
+
         public async Task<object> GetAdvisorStatisticsAsync(int advisorId)
         {
             var advisor = await _advisorRepository.GetByIdAsync(advisorId);
