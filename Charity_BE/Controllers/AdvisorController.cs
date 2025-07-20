@@ -197,7 +197,7 @@ namespace Charity_BE.Controllers
 
         // DELETE: api/advisor/availability/{id}
         [HttpDelete("availability/{id}")]
-        //[Authorize(Roles = "Advisor")]
+        [Authorize(Roles = "Advisor")]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteAvailability(int id)
         {
             try
@@ -216,7 +216,7 @@ namespace Charity_BE.Controllers
 
         // GET: api/advisor/{id}/requests
         [HttpGet("{id}/requests")]
-        //[Authorize(Roles = "Advisor")]
+        [Authorize(Roles = "Advisor")]
         public async Task<ActionResult<ApiResponse<List<AdvisorRequestDTO>>>> GetAdvisorRequests(int id)
         {
             try
