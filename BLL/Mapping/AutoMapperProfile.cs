@@ -63,6 +63,16 @@ namespace BLL.Mapping
             CreateMap<UpdateAdviceRequestDTO, AdviceRequest>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
+            CreateMap<AdviceRequest, AdvisorRequestDTO>()
+                .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.User.FullName))
+                .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.AdvisorFullName, opt => opt.MapFrom(src => src.Advisor.FullName))
+                .ForMember(dest => dest.ConsultationName, opt => opt.MapFrom(src => src.Consultation.ConsultationName))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+                .ForMember(dest => dest.AppointmentTime, opt => opt.MapFrom(src => src.ConfirmedDate ?? DateTime.MinValue))
+                .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Response));
+
+
             // Complaint Mappings
             CreateMap<Complaint, ComplaintDTO>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName));

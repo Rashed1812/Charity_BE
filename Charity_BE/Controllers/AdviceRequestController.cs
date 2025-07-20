@@ -57,7 +57,7 @@ namespace Charity_BE.Controllers
 
         // GET: api/advicerequest/{id}
         [HttpGet("{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<ApiResponse<AdviceRequestDTO>>> GetRequestById(int id)
         {
             try
@@ -214,7 +214,7 @@ namespace Charity_BE.Controllers
 
         // GET: api/advicerequest/advisor/{advisorId}
         [HttpGet("advisor/{advisorId}")]
-        [Authorize(Roles = "Advisor")]
+        //[Authorize(Roles = "Advisor")]
         public async Task<ActionResult<ApiResponse<List<AdviceRequestDTO>>>> GetRequestsByAdvisor(int advisorId)
         {
             try
@@ -246,7 +246,7 @@ namespace Charity_BE.Controllers
 
         // GET: api/advicerequest/statistics
         [HttpGet("statistics")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<object>>> GetRequestStatistics()
         {
             try
