@@ -1,9 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOS.VolunteerDTOs;
 using Shared.DTOS.Common;
 using BLL.ServiceAbstraction;
 using DAL.Data.Models;
+using BLL.Service;
+using Shared.DTOS.NotificationDTOs;
 
 namespace Charity_BE.Controllers
 {
@@ -12,10 +14,16 @@ namespace Charity_BE.Controllers
     public class VolunteerController : ControllerBase
     {
         private readonly IVolunteerService _volunteerService;
+        private readonly INotificationService _notificationService;
+        private readonly IAdminService _adminService;
+        private readonly IUserService _userService;
 
-        public VolunteerController(IVolunteerService volunteerService)
+        public VolunteerController(IVolunteerService volunteerService, INotificationService notificationService, IAdminService adminService, IUserService userService)
         {
             _volunteerService = volunteerService;
+            _notificationService = notificationService;
+            _adminService = adminService;
+            _userService = userService;
         }
 
         // GET: api/volunteer
@@ -78,21 +86,39 @@ namespace Charity_BE.Controllers
 
         // POST: api/volunteer
         [HttpPost]
-        [Authorize]
-        public async Task<ActionResult<ApiResponse<VolunteerApplicationDTO>>> CreateApplication([FromBody] CreateVolunteerApplicationDTO createApplicationDto)
+        //[Authorize]
+        public async Task<ActionResult<ApiResponse<VolunteerApplicationDTO>>> CreateApplication([FromQuery] string userId,
+                                        [FromBody] CreateVolunteerApplicationDTO createApplicationDto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ApiResponse<VolunteerApplicationDTO>.ErrorResult("Invalid input data", 400, 
+            {
+                return BadRequest(ApiResponse<VolunteerApplicationDTO>.ErrorResult(
+                    "Invalid input data", 400,
                     ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList()));
-
+            }
             try
             {
-                var userId = User.FindFirst("sub")?.Value;
                 if (string.IsNullOrEmpty(userId))
-                    return Unauthorized(ApiResponse<VolunteerApplicationDTO>.ErrorResult("User not authenticated", 401));
+                    return Unauthorized(ApiResponse<VolunteerApplicationDTO>.ErrorResult("User ID is missing", 401));
 
                 var application = await _volunteerService.CreateApplicationAsync(userId, createApplicationDto);
-                return CreatedAtAction(nameof(GetApplicationById), new { id = application.Id }, 
+
+                var user = await _userService.GetUserByIdAsync(userId);
+                var admins = await _adminService.GetAllAdminsAsync();
+
+                foreach (var admin in admins)
+                {
+                    var notification = new NotificationCreateDTO
+                    {
+                        UserId = admin.UserId,
+                        Title = "طلب تطوع جديد",
+                        Message = $"قام المستخدم {user.FullName} ({user.Email}) بتقديم طلب تطوع.",
+                        Type = NotificationType.General
+                    };
+                    await _notificationService.AddNotificationAsync(notification);
+                }
+
+                return CreatedAtAction(nameof(GetApplicationById), new { id = application.Id },
                     ApiResponse<VolunteerApplicationDTO>.SuccessResult(application, "Application submitted successfully"));
             }
             catch (Exception ex)
@@ -100,6 +126,8 @@ namespace Charity_BE.Controllers
                 return StatusCode(500, ApiResponse<VolunteerApplicationDTO>.ErrorResult("Failed to submit application", 500));
             }
         }
+
+
 
         // PUT: api/volunteer/{id}
         [HttpPut("{id}")]
@@ -149,20 +177,32 @@ namespace Charity_BE.Controllers
         // PUT: api/volunteer/{id}/review
         [HttpPut("{id}/review")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<VolunteerApplicationDTO>>> ReviewApplication(int id, [FromBody] ReviewVolunteerApplicationDTO reviewDto)
+        public async Task<ActionResult<ApiResponse<VolunteerApplicationDTO>>> ReviewApplication(
+            int id,
+            [FromQuery] string adminId,
+            [FromBody] ReviewVolunteerApplicationDTO reviewDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<VolunteerApplicationDTO>.ErrorResult("Invalid input data", 400));
 
             try
             {
-                var adminId = User.FindFirst("sub")?.Value;
                 if (string.IsNullOrEmpty(adminId))
-                    return Unauthorized(ApiResponse<VolunteerApplicationDTO>.ErrorResult("Admin not authenticated", 401));
+                    return Unauthorized(ApiResponse<VolunteerApplicationDTO>.ErrorResult("Admin ID is missing", 401));
 
                 var application = await _volunteerService.ReviewApplicationAsync(id, adminId, reviewDto);
                 if (application == null)
                     return NotFound(ApiResponse<VolunteerApplicationDTO>.ErrorResult($"Application with ID {id} not found", 404));
+
+                var notification = new NotificationCreateDTO
+                {
+                    UserId = application.UserId,
+                    Title = "تحديث على طلب التطوع الخاص بك",
+                    Message = $"تم مراجعة طلب التطوع الخاص بك، الحالة الآن: {application.Status}.\nملاحظات المراجع: {reviewDto.AdminNotes}",
+                    Type = NotificationType.General
+                };
+
+                await _notificationService.AddNotificationAsync(notification);
 
                 return Ok(ApiResponse<VolunteerApplicationDTO>.SuccessResult(application, "Application reviewed successfully"));
             }
@@ -171,6 +211,7 @@ namespace Charity_BE.Controllers
                 return StatusCode(500, ApiResponse<VolunteerApplicationDTO>.ErrorResult("Failed to review application", 500));
             }
         }
+
 
         // GET: api/volunteer/status/{status}
         [HttpGet("status/{status}")]

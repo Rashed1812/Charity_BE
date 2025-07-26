@@ -50,5 +50,12 @@ namespace DAL.Repositories.RepositoryClasses
             return await _context.VolunteerApplications
                 .CountAsync(v => v.Status == status);
         }
+
+        public async Task<VolunteerApplication> GetByIdAsyncWithRelatedData(int id)
+        {
+            return await _context.VolunteerApplications
+                .Include(v => v.User)
+                .FirstOrDefaultAsync(v => v.Id == id);
+        }
     }
 } 

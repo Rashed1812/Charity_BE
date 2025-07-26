@@ -97,7 +97,7 @@ namespace BLL.Service
 
         public async Task<VolunteerApplicationDTO> ReviewApplicationAsync(int id, string adminId, ReviewVolunteerApplicationDTO reviewDto)
         {
-            var application = await _volunteerApplicationRepository.GetByIdAsync(id);
+            var application = await _volunteerApplicationRepository.GetByIdAsyncWithRelatedData(id);
             if (application == null)
                 return null;
 

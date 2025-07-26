@@ -272,7 +272,7 @@ namespace DAL.Data.DataSeed
             try
             {
                 // Step 1: Create Roles if not exist
-                string[] roles = { "Admin", "User", "Advisor" };
+                string[] roles = { "Admin", "User", "Advisor", "Mediation" };
                 foreach (var role in roles)
                 {
                     if (!await _roleManager.RoleExistsAsync(role))

@@ -94,7 +94,9 @@ namespace DAL.Repositories.RepositoryClasses
 
         public async Task<AdvisorAvailability> GetAvailabilityByIdAsync(int availabilityId)
         {
-            return await _dbContext.AdvisorAvailabilities.FirstOrDefaultAsync(a => a.Id == availabilityId);
+            return await _dbContext.AdvisorAvailabilities
+                .Include(a => a.Advisor)
+                .FirstOrDefaultAsync(a => a.Id == availabilityId);
         }
 
         public async Task<AdvisorAvailability> GetAvailabilityByDateTimeAsync(int advisorId, DateTime dateTime)

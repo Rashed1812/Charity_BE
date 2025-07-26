@@ -3,6 +3,7 @@ using BLL.ServiceAbstraction;
 using DAL.Repositories.RepositoryIntrfaces;
 using DAL.Data.Models;
 using Shared.DTOS.NewsDTOs;
+using BLL.Services.FileService;
 
 namespace BLL.Service
 {
@@ -44,6 +45,11 @@ namespace BLL.Service
             if (news.IsPublished)
                 news.PublishedAt = DateTime.UtcNow;
 
+            FileService fs = new FileService();
+
+            var imgUrl =await fs.UploadFileAsync(createNewsDto.Image, fs._newsFileName);
+            news.ImageUrl = imgUrl;
+
             var createdNews = await _newsItemRepository.AddAsync(news);
             return _mapper.Map<NewsItemDTO>(createdNews);
         }
@@ -64,9 +70,6 @@ namespace BLL.Service
             if (!string.IsNullOrEmpty(updateNewsDto.Summary))
                 news.Summary = updateNewsDto.Summary;
 
-            if (!string.IsNullOrEmpty(updateNewsDto.ImageUrl))
-                news.ImageUrl = updateNewsDto.ImageUrl;
-
             if (!string.IsNullOrEmpty(updateNewsDto.Category))
                 news.Category = updateNewsDto.Category;
 
@@ -82,6 +85,15 @@ namespace BLL.Service
 
             news.UpdatedAt = DateTime.UtcNow;
 
+            if(updateNewsDto.Image!=null)
+            {
+                FileService fs = new FileService();
+                fs.DeleteFile(news.ImageUrl);
+
+                var imgUrl =await fs.UploadFileAsync(updateNewsDto.Image, fs._newsFileName);
+                news.ImageUrl = imgUrl;
+            }
+
             var updatedNews = await _newsItemRepository.UpdateAsync(news);
             return _mapper.Map<NewsItemDTO>(updatedNews);
         }
@@ -91,7 +103,8 @@ namespace BLL.Service
             var news = await _newsItemRepository.GetByIdAsync(id);
             if (news == null)
                 return false;
-
+            FileService fs = new FileService();
+            fs.DeleteFile(news.ImageUrl);
             await _newsItemRepository.DeleteAsync(news);
             return true;
         }

@@ -21,7 +21,6 @@ namespace DAL.Repositories.RepositoryClasses
             await _context.Notifications.AddAsync(notification);
             await _context.SaveChangesAsync();
         }
-
         public async Task<List<Notification>> GetUserNotificationsAsync(string userId, bool onlyUnread = false)
         {
             var query = _context.Notifications.Where(n => n.UserId == userId);
@@ -29,7 +28,6 @@ namespace DAL.Repositories.RepositoryClasses
                 query = query.Where(n => !n.IsRead);
             return await query.OrderByDescending(n => n.CreatedAt).ToListAsync();
         }
-
         public async Task MarkAsReadAsync(int notificationId)
         {
             var notification = await _context.Notifications.FindAsync(notificationId);

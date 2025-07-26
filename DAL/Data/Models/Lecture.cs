@@ -32,12 +32,12 @@ namespace DAL.Data.Models
         public string? ThumbnailUrl { get; set; }
 
         [StringLength(500)]
-        public string FilePath { get; set; }
+        public string FilePath { get; set; } = "";
 
         public long? FileSize { get; set; }
 
         [StringLength(50)]
-        public string FileFormat { get; set; }
+        public string FileFormat { get; set; } = "";
 
         public int? Duration { get; set; } // in seconds
 

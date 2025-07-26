@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.DTOS.LectureDTOs;
 using Shared.DTOS.Common;
 using BLL.ServiceAbstraction;
+using Microsoft.EntityFrameworkCore;
 
 namespace Charity_BE.Controllers
 {
@@ -11,10 +12,13 @@ namespace Charity_BE.Controllers
     public class LectureController : ControllerBase
     {
         private readonly ILectureService _lectureService;
+        private readonly IAdminService _adminService;
 
-        public LectureController(ILectureService lectureService)
+
+        public LectureController(ILectureService lectureService, IAdminService adminService)
         {
             _lectureService = lectureService;
+            _adminService = adminService;
         }
 
         // GET: api/lecture
@@ -67,21 +71,22 @@ namespace Charity_BE.Controllers
 
         // POST: api/lecture
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<LectureDTO>>> CreateLecture([FromBody] CreateLectureDTO createLectureDto)
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResponse<LectureDTO>>> CreateLecture(string adminId, [FromBody] CreateLectureDTO createLectureDto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ApiResponse<LectureDTO>.ErrorResult("بيانات غير صحيحة", 400, 
+                return BadRequest(ApiResponse<LectureDTO>.ErrorResult("بيانات غير صحيحة", 400,
                     ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList()));
 
             try
             {
-                var adminId = User.FindFirst("sub")?.Value;
-                if (string.IsNullOrEmpty(adminId))
-                    return Unauthorized(ApiResponse<LectureDTO>.ErrorResult("المدير غير مصادق عليه", 401));
+                var admin = await _adminService.GetAdminByUserIdAsync(adminId);
+                if (admin == null)
+                    return NotFound(ApiResponse<LectureDTO>.ErrorResult("المسؤول غير موجود", 404));
 
-                var lecture = await _lectureService.CreateLectureAsync(adminId, createLectureDto);
-                return CreatedAtAction(nameof(GetLectureById), new { id = lecture.Id }, 
+                var lecture = await _lectureService.CreateLectureAsync(admin.Id.ToString(), createLectureDto);
+
+                return CreatedAtAction(nameof(GetLectureById), new { id = lecture.Id },
                     ApiResponse<LectureDTO>.SuccessResult(lecture, "تم إنشاء المحاضرة بنجاح"));
             }
             catch (Exception ex)
@@ -90,10 +95,11 @@ namespace Charity_BE.Controllers
             }
         }
 
+
         // POST: api/lecture/upload
         [HttpPost("upload")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<LectureDTO>>> UploadVideo([FromForm] LectureUploadDTO uploadDto)
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResponse<LectureDTO>>> UploadVideo(string adminId,[FromForm] LectureUploadDTO uploadDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<LectureDTO>.ErrorResult("بيانات غير صحيحة", 400, 
@@ -101,9 +107,9 @@ namespace Charity_BE.Controllers
 
             try
             {
-                var adminId = User.FindFirst("sub")?.Value;
-                if (string.IsNullOrEmpty(adminId))
-                    return Unauthorized(ApiResponse<LectureDTO>.ErrorResult("المدير غير مصادق عليه", 401));
+                var admin = await _adminService.GetAdminByUserIdAsync(adminId);
+                if (admin == null)
+                    return NotFound(ApiResponse<LectureDTO>.ErrorResult("المسؤول غير موجود", 404));
 
                 // Validate video file
                 if (!await _lectureService.ValidateVideoFileAsync(uploadDto.VideoFile))

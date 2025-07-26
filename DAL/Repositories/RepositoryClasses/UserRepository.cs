@@ -188,7 +188,6 @@ namespace DAL.Repositories.RepositoryClasses
                 var count = (await _userManager.GetUsersInRoleAsync(role)).Count;
                 result.Add(new { Role = role, Count = count });
             }
-            
             return result;
         }
     }

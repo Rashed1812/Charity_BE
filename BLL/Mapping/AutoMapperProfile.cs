@@ -13,6 +13,7 @@ using Shared.DTOS.ServiceOfferingDTOs;
 using Shared.DTOS.UserDTO;
 using Shared.DTOS.VolunteerDTOs;
 using Shared.DTOS.NotificationDTOs;
+using Shared.DTOS.MediationDTOs;
 
 namespace BLL.Mapping
 {
@@ -116,6 +117,16 @@ namespace BLL.Mapping
             // Notification Mappings
             CreateMap<Notification, NotificationDTO>();
             CreateMap<NotificationCreateDTO, Notification>();
+
+            // Mediation Mappings
+            CreateMap<Mediation, Shared.DTOS.MediationDTOs.MediationDTO>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl));
+            CreateMap<Shared.DTOS.MediationDTOs.CreateMediationDTO, Mediation>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName));
+            CreateMap<Shared.DTOS.MediationDTOs.UpdateMediationDTO, Mediation>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 } 

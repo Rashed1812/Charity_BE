@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.DTOS.UserDTO;
 using Shared.DTOS.Common;
 using BLL.ServiceAbstraction;
+using BLL.Service;
+using Shared.DTOS.NotificationDTOs;
 
 namespace Charity_BE.Controllers
 {
@@ -12,10 +14,12 @@ namespace Charity_BE.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly INotificationService _notificationService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, INotificationService notificationService)
         {
             _userService = userService;
+            _notificationService = notificationService;
         }
 
         // GET: api/user
@@ -176,6 +180,34 @@ namespace Charity_BE.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<object>.ErrorResult("Failed to retrieve statistics", 500));
+            }
+        }
+        [HttpGet("notifications")]
+        public async Task<ActionResult<ApiResponse<List<NotificationDTO>>>> GetMyNotifications(
+            [FromQuery] string userId,
+            [FromQuery] bool onlyUnread = false)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(ApiResponse<List<NotificationDTO>>.ErrorResult("User ID is missing", 401));
+
+            var notifications = await _notificationService.GetUserNotificationsAsync(userId, onlyUnread);
+            return Ok(ApiResponse<List<NotificationDTO>>.SuccessResult(notifications));
+        }
+        [HttpPatch("notifications/{notificationId}/read")]
+        public async Task<ActionResult<ApiResponse<string>>> MarkNotificationAsRead(int notificationId)
+        {
+            try
+            {
+                await _notificationService.MarkAsReadAsync(notificationId);
+                return Ok(ApiResponse<string>.SuccessResult("Notification marked as read successfully"));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(ApiResponse<string>.ErrorResult("Notification not found", 404));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, ApiResponse<string>.ErrorResult("An error occurred while marking the notification as read", 500));
             }
         }
     }

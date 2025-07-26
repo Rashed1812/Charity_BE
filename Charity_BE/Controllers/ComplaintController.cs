@@ -1,8 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOS.ComplaintDTOs;
 using Shared.DTOS.Common;
 using BLL.ServiceAbstraction;
+using Microsoft.AspNetCore.Identity;
+using Shared.DTOS.NotificationDTOs;
+using DAL.Data.Models;
 
 namespace Charity_BE.Controllers
 {
@@ -11,10 +14,17 @@ namespace Charity_BE.Controllers
     public class ComplaintController : ControllerBase
     {
         private readonly IComplaintService _complaintService;
+        IAdminService _adminService;
+        INotificationService _notificationService;
+        IUserService _userService;
 
-        public ComplaintController(IComplaintService complaintService)
+
+        public ComplaintController(IComplaintService complaintService, IAdminService adminService, INotificationService notificationService,IUserService userService)
         {
+            _userService = userService;
             _complaintService = complaintService;
+            _adminService = adminService;
+            _notificationService = notificationService;
         }
 
         // GET: api/complaint
@@ -53,29 +63,42 @@ namespace Charity_BE.Controllers
             }
         }
 
-        // POST: api/complaint
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ApiResponse<ComplaintDTO>>> CreateComplaint([FromBody] CreateComplaintDTO createComplaintDto)
+        public async Task<ActionResult<ApiResponse<ComplaintDTO>>> Create(
+            [FromQuery] string userId,
+            [FromBody] CreateComplaintDTO dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ApiResponse<ComplaintDTO>.ErrorResult("Invalid input data", 400, 
+                return BadRequest(ApiResponse<ComplaintDTO>.ErrorResult("Invalid input data", 400,
                     ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList()));
 
-            try
-            {
-                var userId = User.FindFirst("sub")?.Value;
-                if (string.IsNullOrEmpty(userId))
-                    return Unauthorized(ApiResponse<ComplaintDTO>.ErrorResult("User not authenticated", 401));
+            if (string.IsNullOrEmpty(userId))
+                return BadRequest(ApiResponse<ComplaintDTO>.ErrorResult("User ID is required", 400));
 
-                var complaint = await _complaintService.CreateComplaintAsync(userId, createComplaintDto);
-                return Ok(ApiResponse<ComplaintDTO>.SuccessResult(complaint, "Complaint created successfully"));
-            }
-            catch (Exception ex)
+            var createdComplaint = await _complaintService.CreateComplaintAsync(userId, dto);
+
+            // جلب اسم المستخدم
+            var user = await _userService.GetUserByIdAsync(userId);
+            var userName = user.FullName;
+
+            // إرسال إشعار لكل الأدمنز
+            var admins = await _adminService.GetAllAdminsAsync();
+            foreach (var admin in admins)
             {
-                return StatusCode(500, ApiResponse<ComplaintDTO>.ErrorResult("Failed to create complaint", 500));
+                var notification = new NotificationCreateDTO
+                {
+                    UserId = admin.UserId,
+                    Title = "شكوى جديدة",
+                    Message = $"قام المستخدم {userName} بتقديم شكوى جديدة. يرجى مراجعتها.",
+                    Type = NotificationType.General
+                };
+                await _notificationService.AddNotificationAsync(notification);
             }
+
+            return Ok(ApiResponse<ComplaintDTO>.SuccessResult(createdComplaint, "Complaint created successfully"));
         }
+
 
         // PUT: api/complaint/{id}
         [HttpPut("{id}")]
